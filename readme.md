@@ -6,6 +6,8 @@ This project is an unofficial save game editor for the game "She Will Punish The
 
 Releases can be found over [here](https://github.com/CrystalFerrai/SwptEditor/releases).
 
+You may need to install the [.NET Framework 4.8 Runtime](https://dotnet.microsoft.com/download/dotnet-framework/net48) if you do not already have it.
+
 Some virus scanners assume that any unsigned software is potentially a virus. I do not have a software signing certificate and do not wish to purchase one. This product does not do anything intentionally malicious, but all I can offer you is my word on that. The only damage that may be caused by the program is to your save game files. I strongly recommend backing them up before editing them with this tool.
 
 ## How to Build
