@@ -98,7 +98,7 @@ namespace SwptSaveEditor
 
         private void TabControl_PreviewMouseDown(object sender, MouseButtonEventArgs e)
         {
-            for (DependencyObject current = e.OriginalSource as DependencyObject; current != null; current = VisualTreeHelper.GetParent(current))
+            for (DependencyObject current = e.OriginalSource as DependencyObject; current != null && current is Visual; current = VisualTreeHelper.GetParent(current))
             {
                 if (current is TabItem)
                 {

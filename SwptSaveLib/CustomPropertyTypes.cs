@@ -22,6 +22,11 @@ namespace SwptSaveLib
         public float X { get; set; }
         public float Y { get; set; }
 
+        public Vector2 Clone()
+        {
+            return new Vector2() { X = X, Y = Y };
+        }
+
         public override string ToString()
         {
             return $"({X}, {Y})";
@@ -36,6 +41,11 @@ namespace SwptSaveLib
         public float X { get; set; }
         public float Y { get; set; }
         public float Z { get; set; }
+
+        public Vector3 Clone()
+        {
+            return new Vector3() { X = X, Y = Y, Z = Z };
+        }
 
         public override string ToString()
         {
@@ -52,6 +62,11 @@ namespace SwptSaveLib
         public float Y { get; set; }
         public float Z { get; set; }
         public float W { get; set; }
+
+        public Vector4 Clone()
+        {
+            return new Vector4() { X = X, Y = Y, Z = Z, W = W };
+        }
 
         public override string ToString()
         {

@@ -26,6 +26,11 @@ namespace SwptSaveLib.ValueTypes
         {
         }
 
+        public override object CloneData()
+        {
+            return TypedData.Clone();
+        }
+
         protected internal override void Deserialize(BinaryReader reader)
         {
             Vector2 v = new Vector2();
