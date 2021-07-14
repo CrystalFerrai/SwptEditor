@@ -27,6 +27,19 @@ namespace SwptSaveLib
             return new Vector2() { X = X, Y = Y };
         }
 
+        public override int GetHashCode()
+        {
+            int hash = 17;
+            hash += X.GetHashCode() * 23;
+            hash += Y.GetHashCode() * 23;
+            return hash;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Vector2 other && X == other.X && Y == other.Y;
+        }
+
         public override string ToString()
         {
             return $"({X}, {Y})";
@@ -45,6 +58,20 @@ namespace SwptSaveLib
         public Vector3 Clone()
         {
             return new Vector3() { X = X, Y = Y, Z = Z };
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = 17;
+            hash += X.GetHashCode() * 23;
+            hash += Y.GetHashCode() * 23;
+            hash += Z.GetHashCode() * 23;
+            return hash;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Vector3 other && X == other.X && Y == other.Y && Z == other.Z;
         }
 
         public override string ToString()
@@ -66,6 +93,21 @@ namespace SwptSaveLib
         public Vector4 Clone()
         {
             return new Vector4() { X = X, Y = Y, Z = Z, W = W };
+        }
+
+        public override int GetHashCode()
+        {
+            int hash = 17;
+            hash += X.GetHashCode() * 23;
+            hash += Y.GetHashCode() * 23;
+            hash += Z.GetHashCode() * 23;
+            hash += W.GetHashCode() * 23;
+            return hash;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is Vector4 other && X == other.X && Y == other.Y && Z == other.Z && W == other.W;
         }
 
         public override string ToString()
