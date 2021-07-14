@@ -44,7 +44,7 @@
                 </Grid.ColumnDefinitions>
                 
                 <Button
-                    ToolTip="Undo"
+                    ToolTip="Undo (Ctrl+Z)"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding UndoCommand}">
                     <Image
@@ -55,7 +55,7 @@
                 
                 <Button
                     Grid.Column="2"
-                    ToolTip="Redo"
+                    ToolTip="Redo (Ctrl+Y)"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding RedoCommand}">
                     <Image
@@ -69,7 +69,7 @@
 
                 <Button
                     Grid.Column="6"
-                    ToolTip="Save"
+                    ToolTip="Save (Ctrl+S)"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding SaveCommand}">
                     <Image
@@ -80,7 +80,7 @@
 
                 <Button
                     Grid.Column="8"
-                    ToolTip="Reload from Disk"
+                    ToolTip="Reload from Disk (F5)"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding ReloadCommand}">
                     <Image

@@ -57,12 +57,53 @@ namespace SwptSaveEditor
 
             if (e.Handled == false)
             {
-                if (Keyboard.Modifiers == ModifierKeys.Control)
-                {
-                    SaveDocument doc = ViewModel.DocumentService.ActiveDocument;
+                SaveDocument doc = ViewModel.DocumentService.ActiveDocument;
 
+                if (Keyboard.Modifiers == ModifierKeys.None)
+                {
                     switch (e.Key)
                     {
+                        case Key.F5:
+                            if (doc.ReloadCommand.CanExecute(null))
+                            {
+                                doc.ReloadCommand.Execute(null);
+                            }
+                            e.Handled = true;
+                            break;
+                    }
+                }
+                else if (Keyboard.Modifiers == ModifierKeys.Control)
+                {
+                    switch (e.Key)
+                    {
+                        case Key.F4:
+                            if (ViewModel.CloseCommand.CanExecute(null))
+                            {
+                                ViewModel.CloseCommand.Execute(null);
+                            }
+                            e.Handled = true;
+                            break;
+                        case Key.N:
+                            if (ViewModel.SaveAllAsCommand.CanExecute(null))
+                            {
+                                ViewModel.SaveAllAsCommand.Execute(null);
+                            }
+                            e.Handled = true;
+                            break;
+                        case Key.O:
+                            if (ViewModel.OpenCommand.CanExecute(null))
+                            {
+                                ViewModel.OpenCommand.Execute(null);
+                            }
+                            e.Handled = true;
+                            break;
+                        case Key.R:
+                            if (ViewModel.ReloadCommand.CanExecute(null))
+                            {
+                                ViewModel.ReloadCommand.Execute(null);
+                            }
+                            e.Handled = true;
+                            break;
                         case Key.S:
                             doc.Save();
                             e.Handled = true;
@@ -84,7 +125,10 @@ namespace SwptSaveEditor
                     switch (e.Key)
                     {
                         case Key.S:
-                            ViewModel.SaveAllChanges();
+                            if (ViewModel.SaveAllCommand.CanExecute(null))
+                            {
+                                ViewModel.SaveAllCommand.Execute(null);
+                            }
                             e.Handled = true;
                             break;
                     }

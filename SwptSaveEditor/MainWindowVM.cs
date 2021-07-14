@@ -184,7 +184,7 @@ namespace SwptSaveEditor
             }
         }
 
-        public void SaveAllChanges()
+        private void SaveAllChanges()
         {
             foreach (SaveDocument doc in mDocuments.Where(d => !d.UndoService.IsSavePoint))
             {

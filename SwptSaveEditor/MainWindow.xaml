@@ -57,7 +57,7 @@
                 <Button
                     BorderThickness="1 1 0 1"
                     Margin="0 0 -1 0"
-                    ToolTip="Open Save Game Folder"
+                    ToolTip="Open Save Game Folder (Ctrl+O)"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding OpenCommand}">
                     <Image
@@ -85,7 +85,7 @@
                 <!-- Close -->
                 <Button
                     Grid.Column="3"
-                    ToolTip="Close All"
+                    ToolTip="Close All (Ctrl+F4)"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding CloseCommand}">
                     <Image
@@ -97,7 +97,7 @@
                 <!-- Reload All -->
                 <Button
                     Grid.Column="5"
-                    ToolTip="Reload All from Disk"
+                    ToolTip="Reload All from Disk (Ctrl+R)"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding ReloadCommand}">
                     <Image
@@ -109,7 +109,7 @@
                 <!-- Save All -->
                 <Button
                     Grid.Column="7"
-                    ToolTip="Save All Changed Files"
+                    ToolTip="Save All Changed Files (Ctrl+Shift+S)"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding SaveAllCommand}">
                     <Image
@@ -121,7 +121,7 @@
                 <!-- Save All As -->
                 <Button
                     Grid.Column="9"
-                    ToolTip="Save All Files to a New Location"
+                    ToolTip="Save All Files to a New Location (Ctrl+N)"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding SaveAllAsCommand}">
                     <Image
