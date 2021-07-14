@@ -1,10 +1,12 @@
 # SwptSaveEditor
 
-This project is an unofficial save game editor for the game "She Will Punish Them" by L2 Games. This product and its creators are not affiliated with L2 Games. Use of this product may damage your save games, so back them up first! We are not responsible for fixing damage caused by use of this program. See the included license.txt for licensing details. Use of this product constitutes acceptance of the license terms.
+This project is an unofficial save game editor for the game "She Will Punish Them" by L2 Games. This product and its creators are not affiliated with L2 Games. I am not responsible for any damage caused by use of this program. See the included license.txt for licensing details. Use of this product constitutes acceptance of the license terms.
 
 ## Releases
 
 Releases can be found over [here](https://github.com/CrystalFerrai/SwptEditor/releases).
+
+Some virus scanners assume that any unsigned software is potentially a virus. I do not have a software signing certificate and do not wish to purchase one. This product does not do anything intentionally malicious, but all I can offer you is my word on that. The only damage that may be caused by the program is to your save game files. I strongly recommend backing them up before editing them with this tool.
 
 ## How to Build
 
