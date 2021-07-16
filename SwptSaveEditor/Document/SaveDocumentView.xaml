@@ -105,6 +105,7 @@
             CanUserResizeRows="False"
             SelectionMode="Single"
             SelectionUnit="Cell"
+            HeadersVisibility="Column"
             b:DataGridBehavior.UseThreeStateSort="True"
             b:DataGridBehavior.IsSaveValueColumn="True"
             Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}}"
