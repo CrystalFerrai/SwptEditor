@@ -185,67 +185,20 @@
         </Grid>
     </DataTemplate>
 
-    <!-- Vector4 -->
+    <!-- Color -->
     <DataTemplate
-        x:Key="{x:Static local:SaveValueTemplateSelector.Vector4TemplateKey}">
-        <TextBlock>
-            <Run Text="{Binding Data.X}" /><Run Text=", " /><Run Text="{Binding Data.Y}" /><Run Text=", " /><Run Text="{Binding Data.Z}" /><Run Text=", " /><Run Text="{Binding Data.W}" />
-        </TextBlock>
+        x:Key="{x:Static local:SaveValueTemplateSelector.LinearColorTemplateKey}">
+        <c:ColorPicker
+            IsReadOnly="True"
+            Color="{Binding Data, Converter={x:Static conv:ColorConverter.Instance}}" />
     </DataTemplate>
-
+    
     <DataTemplate
-        x:Key="{x:Static local:SaveValueTemplateSelector.EditVector4TemplateKey}">
-        <Grid>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition Width="10" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition Width="10" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="100" />
-                <ColumnDefinition Width="10" />
-                <ColumnDefinition Width="auto" />
-                <ColumnDefinition Width="100" />
-            </Grid.ColumnDefinitions>
-            <TextBlock
-                Grid.Column="0"
-                VerticalAlignment="Center"
-                Margin="4 0"
-                FontWeight="Bold"
-                Text="R" />
-            <TextBox
-                Grid.Column="1"
-                Text="{Binding Data.X}" />
-            <TextBlock
-                Grid.Column="3"
-                VerticalAlignment="Center"
-                Margin="4 0"
-                FontWeight="Bold"
-                Text="G" />
-            <TextBox
-                Grid.Column="4"
-                Text="{Binding Data.Y}" />
-            <TextBlock
-                Grid.Column="6"
-                VerticalAlignment="Center"
-                Margin="4 0"
-                FontWeight="Bold"
-                Text="B" />
-            <TextBox
-                Grid.Column="7"
-                Text="{Binding Data.Z}" />
-            <TextBlock
-                Grid.Column="9"
-                VerticalAlignment="Center"
-                Margin="4 0"
-                FontWeight="Bold"
-                Text="A" />
-            <TextBox
-                Grid.Column="10"
-                Text="{Binding Data.W}" />
-        </Grid>
+        x:Key="{x:Static local:SaveValueTemplateSelector.EditLinearColorTemplateKey}">
+        <c:ColorPicker
+            Background="White"
+            Foreground="Black"
+            Color="{Binding Data, Converter={x:Static conv:ColorConverter.Instance}}" />
     </DataTemplate>
 
 </ResourceDictionary>

@@ -30,6 +30,6 @@ namespace SwptSaveLib
         Single = 0x6e3ed76b,
         Vector2 = 0xb59a00d5,
         Vector3 = 0xec66dc46,
-        Vector4 = 0x32cf4b31
+        LinearColor = 0x32cf4b31
     }
 }

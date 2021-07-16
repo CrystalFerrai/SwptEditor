@@ -18,6 +18,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:root="clr-namespace:SwptSaveEditor"
+    xmlns:b="clr-namespace:SwptSaveEditor.Behaviors"
     xmlns:c="clr-namespace:SwptSaveEditor.Controls">
     
     <Grid>
@@ -104,8 +105,8 @@
             CanUserResizeRows="False"
             SelectionMode="Single"
             SelectionUnit="Cell"
-            root:DataGridExtensions.UseThreeStateSort="True"
-            root:DataGridExtensions.IsSaveValueColumn="True"
+            b:DataGridBehavior.UseThreeStateSort="True"
+            b:DataGridBehavior.IsSaveValueColumn="True"
             Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}}"
             ItemsSource="{Binding Properties}">
             <DataGrid.Resources>

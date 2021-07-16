@@ -19,18 +19,19 @@ using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace SwptSaveEditor
+namespace SwptSaveEditor.Behaviors
 {
     /// <summary>
     /// Attached properties for DataGrid
     /// </summary>
-    internal static class DataGridExtensions
+    internal static class DataGridBehavior
     {
         // ----------------------------------------------------------------------------------------------------------------------------------------------
         // UseThreeStateSort
         // Sorting a column in the grid cycles through Ascending, Descending and Unsorted (instead of only Ascending and Descending)
         // ----------------------------------------------------------------------------------------------------------------------------------------------
 
+        [AttachedPropertyBrowsableForType(typeof(DataGrid))]
         public static bool GetUseThreeStateSort(DependencyObject obj)
         {
             return (bool)obj.GetValue(UseThreeStateSortProperty);
@@ -41,7 +42,7 @@ namespace SwptSaveEditor
             obj.SetValue(UseThreeStateSortProperty, value);
         }
 
-        public static readonly DependencyProperty UseThreeStateSortProperty = DependencyProperty.RegisterAttached("UseThreeStateSort", typeof(bool), typeof(DataGridExtensions),
+        public static readonly DependencyProperty UseThreeStateSortProperty = DependencyProperty.RegisterAttached("UseThreeStateSort", typeof(bool), typeof(DataGridBehavior),
             new PropertyMetadata(false, UseThreeStateSort_Changed));
 
         private static void UseThreeStateSort_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs e)
@@ -93,6 +94,7 @@ namespace SwptSaveEditor
         }
         private static Stack<EditRecord> sEditBackupStack = new Stack<EditRecord>();
 
+        [AttachedPropertyBrowsableForType(typeof(DataGrid))]
         public static bool GetIsSaveValueColumn(DependencyObject obj)
         {
             return (bool)obj.GetValue(IsSaveValueColumnProperty);
@@ -103,7 +105,7 @@ namespace SwptSaveEditor
             obj.SetValue(IsSaveValueColumnProperty, value);
         }
 
-        public static readonly DependencyProperty IsSaveValueColumnProperty = DependencyProperty.RegisterAttached("IsSaveValueColumn", typeof(bool), typeof(DataGridExtensions),
+        public static readonly DependencyProperty IsSaveValueColumnProperty = DependencyProperty.RegisterAttached("IsSaveValueColumn", typeof(bool), typeof(DataGridBehavior),
             new PropertyMetadata(false, IsSaveValueColumn_Changed));
 
         private static void IsSaveValueColumn_Changed(DependencyObject sender, DependencyPropertyChangedEventArgs e)

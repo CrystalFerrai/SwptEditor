@@ -90,11 +90,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="App.cs" />
+    <Compile Include="Behaviors\TextBoxBehavior.cs" />
     <Compile Include="Controls\ArrayEditor.cs" />
     <Compile Include="Controls\BindingDataGridTemplateColumn.cs" />
+    <Compile Include="Controls\ColorPicker.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
+    <Compile Include="Converters\ColorToStringConverter.cs" />
     <Compile Include="Converters\PrimitiveToStringConverter.cs" />
-    <Compile Include="DataGridExtensions.cs" />
+    <Compile Include="Converters\ColorConverter.cs" />
+    <Compile Include="Behaviors\DataGridBehavior.cs" />
     <Compile Include="Document\DocumentService.cs" />
     <Compile Include="Document\SaveDocument.cs" />
     <Compile Include="Document\SaveDocumentView.xaml.cs">
@@ -145,6 +149,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Themes\Generic.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Generic\ColorPicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SwptSaveLib\SwptSaveLib.csproj">
@@ -170,7 +182,17 @@
   <ItemGroup>
     <Resource Include="Images\ToolbarIcons\Close.png" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\Markers\Crosshair.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Markers\ArrowLeft.png" />
+    <Resource Include="Images\Markers\ArrowRight.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\Markers\ArrowDown.png" />
+    <Resource Include="Images\Markers\ArrowUp.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

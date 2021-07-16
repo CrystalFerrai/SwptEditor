@@ -47,7 +47,7 @@ namespace SwptSaveLib
                 { SaveValueType.Single,  typeof(SingleValue) },
                 { SaveValueType.Vector2, typeof(Vector2Value) },
                 { SaveValueType.Vector3, typeof(Vector3Value) },
-                { SaveValueType.Vector4, typeof(Vector4Value) }
+                { SaveValueType.LinearColor, typeof(LinearColorValue) }
             };
         }
 

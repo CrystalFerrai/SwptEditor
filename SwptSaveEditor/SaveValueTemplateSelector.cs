@@ -35,7 +35,7 @@ namespace SwptSaveEditor
         private static DataTemplate sSingleTemplate;
         private static DataTemplate sVector2Template;
         private static DataTemplate sVector3Template;
-        private static DataTemplate sVector4Template;
+        private static DataTemplate sLinearColorTemplate;
 
         // Templates for editing values
         private static DataTemplate sEditArrayTemplate;
@@ -45,7 +45,7 @@ namespace SwptSaveEditor
         private static DataTemplate sEditSingleTemplate;
         private static DataTemplate sEditVector2Template;
         private static DataTemplate sEditVector3Template;
-        private static DataTemplate sEditVector4Template;
+        private static DataTemplate sEditLinearColorTemplate;
 
         // Resource keys for display templates
         public static readonly ComponentResourceKey ArrayTemplateKey = new ComponentResourceKey(typeof(SaveValueTemplateSelector), nameof(ArrayTemplateKey));
@@ -55,7 +55,7 @@ namespace SwptSaveEditor
         public static readonly ComponentResourceKey SingleTemplateKey = new ComponentResourceKey(typeof(SaveValueTemplateSelector), nameof(SingleTemplateKey));
         public static readonly ComponentResourceKey Vector2TemplateKey = new ComponentResourceKey(typeof(SaveValueTemplateSelector), nameof(Vector2TemplateKey));
         public static readonly ComponentResourceKey Vector3TemplateKey = new ComponentResourceKey(typeof(SaveValueTemplateSelector), nameof(Vector3TemplateKey));
-        public static readonly ComponentResourceKey Vector4TemplateKey = new ComponentResourceKey(typeof(SaveValueTemplateSelector), nameof(Vector4TemplateKey));
+        public static readonly ComponentResourceKey LinearColorTemplateKey = new ComponentResourceKey(typeof(SaveValueTemplateSelector), nameof(LinearColorTemplateKey));
 
         // Resource keys for edit templates
         public static readonly ComponentResourceKey EditArrayTemplateKey = new ComponentResourceKey(typeof(SaveValueTemplateSelector), nameof(EditArrayTemplateKey));
@@ -65,7 +65,7 @@ namespace SwptSaveEditor
         public static readonly ComponentResourceKey EditSingleTemplateKey = new ComponentResourceKey(typeof(SaveValueTemplateSelector), nameof(EditSingleTemplateKey));
         public static readonly ComponentResourceKey EditVector2TemplateKey = new ComponentResourceKey(typeof(SaveValueTemplateSelector), nameof(EditVector2TemplateKey));
         public static readonly ComponentResourceKey EditVector3TemplateKey = new ComponentResourceKey(typeof(SaveValueTemplateSelector), nameof(EditVector3TemplateKey));
-        public static readonly ComponentResourceKey EditVector4TemplateKey = new ComponentResourceKey(typeof(SaveValueTemplateSelector), nameof(EditVector4TemplateKey));
+        public static readonly ComponentResourceKey EditLinearColorTemplateKey = new ComponentResourceKey(typeof(SaveValueTemplateSelector), nameof(EditLinearColorTemplateKey));
 
         /// <summary>
         /// An instance of the template selector for displaying values
@@ -114,8 +114,8 @@ namespace SwptSaveEditor
                         return sEditVector2Template;
                     case SaveValueType.Vector3:
                         return sEditVector3Template;
-                    case SaveValueType.Vector4:
-                        return sEditVector4Template;
+                    case SaveValueType.LinearColor:
+                        return sEditLinearColorTemplate;
                 }
             }
             else
@@ -137,8 +137,8 @@ namespace SwptSaveEditor
                         return sVector2Template;
                     case SaveValueType.Vector3:
                         return sVector3Template;
-                    case SaveValueType.Vector4:
-                        return sVector4Template;
+                    case SaveValueType.LinearColor:
+                        return sLinearColorTemplate;
                 }
             }
         }
@@ -154,7 +154,7 @@ namespace SwptSaveEditor
                 sSingleTemplate = (DataTemplate)Application.Current.FindResource(SingleTemplateKey);
                 sVector2Template = (DataTemplate)Application.Current.FindResource(Vector2TemplateKey);
                 sVector3Template = (DataTemplate)Application.Current.FindResource(Vector3TemplateKey);
-                sVector4Template = (DataTemplate)Application.Current.FindResource(Vector4TemplateKey);
+                sLinearColorTemplate = (DataTemplate)Application.Current.FindResource(LinearColorTemplateKey);
 
                 sEditArrayTemplate = (DataTemplate)Application.Current.FindResource(EditArrayTemplateKey);
                 sEditStringTemplate = (DataTemplate)Application.Current.FindResource(EditStringTemplateKey);
@@ -163,7 +163,7 @@ namespace SwptSaveEditor
                 sEditSingleTemplate = (DataTemplate)Application.Current.FindResource(EditSingleTemplateKey);
                 sEditVector2Template = (DataTemplate)Application.Current.FindResource(EditVector2TemplateKey);
                 sEditVector3Template = (DataTemplate)Application.Current.FindResource(EditVector3TemplateKey);
-                sEditVector4Template = (DataTemplate)Application.Current.FindResource(EditVector4TemplateKey);
+                sEditLinearColorTemplate = (DataTemplate)Application.Current.FindResource(EditLinearColorTemplateKey);
 
                 sResourcesSearched = true;
             }

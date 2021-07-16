@@ -27,6 +27,23 @@ namespace SwptSaveEditor
     internal static class Images
     {
         /// <summary>
+        /// Images used to mark things
+        /// </summary>
+        internal static class Markers
+        {
+            public static ImageSource ArrowDown { get; private set; }
+            public static ImageSource ArrowLeft { get; private set; }
+            public static ImageSource ArrowRight { get; private set; }
+            public static ImageSource ArrowUp { get; private set; }
+            public static ImageSource Crosshair { get; private set; }
+
+            static Markers()
+            {
+                LoadImages(typeof(Markers));
+            }
+        }
+
+        /// <summary>
         /// Icons used by buttons in toolbars
         /// </summary>
         internal static class ToolbarIcons

@@ -16,7 +16,8 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:root="clr-namespace:SwptSaveEditor"
-    xmlns:local="clr-namespace:SwptSaveEditor.Controls">
+    xmlns:local="clr-namespace:SwptSaveEditor.Controls"
+    xmlns:b="clr-namespace:SwptSaveEditor.Behaviors">
 
     <Style
         TargetType="{x:Type local:ArrayEditor}">
@@ -43,7 +44,7 @@
                                 CanUserDeleteRows="True"
                                 CanUserResizeColumns="False"
                                 CanUserResizeRows="False"
-                                root:DataGridExtensions.IsSaveValueColumn="True"
+                                b:DataGridBehavior.IsSaveValueColumn="True"
                                 Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}}"
                                 ItemsSource="{Binding Data}">
                                 <DataGrid.Columns>

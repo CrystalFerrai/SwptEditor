@@ -17,12 +17,12 @@ using System.IO;
 namespace SwptSaveLib.ValueTypes
 {
     /// <summary>
-    /// Represents a SaveProperty value of type Vector4
+    /// Represents a SaveProperty value of type LinearColor
     /// </summary>
-    public class Vector4Value : SaveValue<Vector4>
+    public class LinearColorValue : SaveValue<LinearColor>
     {
-        public Vector4Value()
-            : base(SaveValueType.Vector4)
+        public LinearColorValue()
+            : base(SaveValueType.LinearColor)
         {
         }
 
@@ -33,20 +33,20 @@ namespace SwptSaveLib.ValueTypes
 
         protected internal override void Deserialize(BinaryReader reader)
         {
-            Vector4 v = new Vector4();
-            v.X = reader.ReadSingle();
-            v.Y = reader.ReadSingle();
-            v.Z = reader.ReadSingle();
-            v.W = reader.ReadSingle();
+            LinearColor v = new LinearColor();
+            v.R = reader.ReadSingle();
+            v.G = reader.ReadSingle();
+            v.B = reader.ReadSingle();
+            v.A = reader.ReadSingle();
             TypedData = v;
         }
 
         protected internal override void Serialize(BinaryWriter writer)
         {
-            writer.Write(TypedData.X);
-            writer.Write(TypedData.Y);
-            writer.Write(TypedData.Z);
-            writer.Write(TypedData.W);
+            writer.Write(TypedData.R);
+            writer.Write(TypedData.G);
+            writer.Write(TypedData.B);
+            writer.Write(TypedData.A);
         }
     }
 }

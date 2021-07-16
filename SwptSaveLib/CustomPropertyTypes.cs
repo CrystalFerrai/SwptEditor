@@ -81,38 +81,38 @@ namespace SwptSaveLib
     }
 
     /// <summary>
-    /// A four-dimensional vector
+    /// A color in linear space
     /// </summary>
-    public class Vector4
+    public class LinearColor
     {
-        public float X { get; set; }
-        public float Y { get; set; }
-        public float Z { get; set; }
-        public float W { get; set; }
+        public float R { get; set; }
+        public float G { get; set; }
+        public float B { get; set; }
+        public float A { get; set; }
 
-        public Vector4 Clone()
+        public LinearColor Clone()
         {
-            return new Vector4() { X = X, Y = Y, Z = Z, W = W };
+            return new LinearColor() { R = R, G = G, B = B, A = A };
         }
 
         public override int GetHashCode()
         {
             int hash = 17;
-            hash += X.GetHashCode() * 23;
-            hash += Y.GetHashCode() * 23;
-            hash += Z.GetHashCode() * 23;
-            hash += W.GetHashCode() * 23;
+            hash += R.GetHashCode() * 23;
+            hash += G.GetHashCode() * 23;
+            hash += B.GetHashCode() * 23;
+            hash += A.GetHashCode() * 23;
             return hash;
         }
 
         public override bool Equals(object obj)
         {
-            return obj is Vector4 other && X == other.X && Y == other.Y && Z == other.Z && W == other.W;
+            return obj is LinearColor other && R == other.R && G == other.G && B == other.B && A == other.A;
         }
 
         public override string ToString()
         {
-            return $"({X}, {Y}, {Z}, {W})";
+            return $"({R}, {G}, {B}, {A})";
         }
     }
 }

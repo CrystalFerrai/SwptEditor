@@ -76,7 +76,7 @@
     <Compile Include="ValueTypes\StringValue.cs" />
     <Compile Include="ValueTypes\Vector2Value.cs" />
     <Compile Include="ValueTypes\Vector3Value.cs" />
-    <Compile Include="ValueTypes\Vector4Value.cs" />
+    <Compile Include="ValueTypes\LinearColorValue.cs" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
