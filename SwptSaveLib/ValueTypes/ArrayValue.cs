@@ -48,7 +48,7 @@ namespace SwptSaveLib.ValueTypes
         {
             get
             {
-                if (mData.Count > 0 && mData.Count <= 10)
+                if (mData.Count > 0 && mData.Count <= 8)
                 {
                     return string.Join(", ", mData);
                 }
@@ -57,6 +57,8 @@ namespace SwptSaveLib.ValueTypes
         }
 
         public SaveValueType ItemType { get; }
+
+        public override string DisplayType => $"{ItemType.GetDisplayName()} {Type.GetDisplayName()}";
 
         public ArrayValue(SaveValueType itemType)
             : base(SaveValueType.Array)

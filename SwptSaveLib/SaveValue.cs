@@ -36,6 +36,8 @@ namespace SwptSaveLib
         }
         private object _data;
 
+        public virtual string DisplayType => Type.GetDisplayName();
+
         static SaveValue()
         {
             sTypeMap = new Dictionary<SaveValueType, Type>()

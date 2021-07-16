@@ -32,4 +32,23 @@ namespace SwptSaveLib
         Vector3 = 0xec66dc46,
         LinearColor = 0x32cf4b31
     }
+
+    public static class SaveValueTypeExtensions
+    {
+        public static string GetDisplayName(this SaveValueType value)
+        {
+            switch (value)
+            {
+                case SaveValueType.Array: return "Array";
+                case SaveValueType.String: return "Text";
+                case SaveValueType.Bool: return "Boolean";
+                case SaveValueType.Int32: return "Integer";
+                case SaveValueType.Single: return "Number";
+                case SaveValueType.Vector2: return "2D Vector";
+                case SaveValueType.Vector3: return "3D Vector";
+                case SaveValueType.LinearColor: return "Color";
+                default: return "Unknown";
+            }
+        }
+    }
 }

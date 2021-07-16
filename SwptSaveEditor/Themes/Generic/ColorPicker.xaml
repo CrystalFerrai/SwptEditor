@@ -50,7 +50,7 @@
 
     <Style
         TargetType="{x:Type c:ColorPicker}">
-        <Setter Property="Padding" Value="4 1" />
+        <Setter Property="Padding" Value="2 0" />
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate

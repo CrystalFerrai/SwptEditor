@@ -130,10 +130,17 @@
                 <c:BindingDataGridTemplateColumn
                     Header="Value"
                     Width="*"
+                    MinWidth="100"
                     CanUserSort="False"
                     Binding="{Binding Value}"
                     CellTemplateSelector="{x:Static root:SaveValueTemplateSelector.Instance}"
                     CellEditingTemplateSelector="{x:Static root:SaveValueTemplateSelector.EditInstance}" />
+                <DataGridTextColumn
+                    Header="Type"
+                    Width="Auto"
+                    IsReadOnly="True"
+                    CellStyle="{StaticResource NameColumnStyle}"
+                    Binding="{Binding Value.DisplayType}" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>
