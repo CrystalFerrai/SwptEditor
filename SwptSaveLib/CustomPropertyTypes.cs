@@ -90,6 +90,14 @@ namespace SwptSaveLib
         public float B { get; set; }
         public float A { get; set; }
 
+        public LinearColor()
+        {
+            R = 1.0f;
+            G = 0.0f;
+            B = 1.0f;
+            A = 1.0f;
+        }
+
         public LinearColor Clone()
         {
             return new LinearColor() { R = R, G = G, B = B, A = A };

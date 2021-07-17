@@ -12,29 +12,26 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.IO;
+using System.Windows;
 
-namespace SwptSaveLib.ValueTypes
+namespace SwptSaveEditor.Utils
 {
     /// <summary>
-    /// Represents a SaveProperty value of type string
+    /// Proxy to connect a data binding source to the visual tree when the target is diconnected
     /// </summary>
-    public class StringValue : SaveValue<string>
+    internal class BindingProxy : Freezable
     {
-        public StringValue()
-            : base(SaveValueType.String)
+        public object Context
         {
-            Data = string.Empty;
+            get { return GetValue(ContextProperty); }
+            set { SetValue(ContextProperty, value); }
         }
+        public static readonly DependencyProperty ContextProperty = DependencyProperty.Register(nameof(Context), typeof(object), typeof(BindingProxy),
+            new PropertyMetadata(null));
 
-        protected internal override void Deserialize(BinaryReader reader)
+        protected override Freezable CreateInstanceCore()
         {
-            TypedData = reader.ReadPrefixedString();
-        }
-
-        protected internal override void Serialize(BinaryWriter writer)
-        {
-            writer.WritePrefixedString(TypedData);
+            return new BindingProxy();
         }
     }
 }

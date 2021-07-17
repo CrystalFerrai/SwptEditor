@@ -24,6 +24,7 @@ namespace SwptSaveLib.ValueTypes
         public LinearColorValue()
             : base(SaveValueType.LinearColor)
         {
+            Data = new LinearColor();
         }
 
         public override object CloneData()

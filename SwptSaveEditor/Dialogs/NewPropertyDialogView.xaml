@@ -1,0 +1,106 @@
+﻿<!-- Copyright 2021 Crystal Ferrai
+    
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+    
+        http://www.apache.org/licenses/LICENSE-2.0
+    
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License. -->
+    
+<Window
+    x:Class="SwptSaveEditor.Dialogs.NewPropertyDialogView"
+    x:ClassModifier="internal"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:SwptSaveEditor.Dialogs"
+    mc:Ignorable="d"
+    Title="Create Property"
+    ResizeMode="NoResize"
+    Width="300"
+    SizeToContent="Height"
+    FocusManager.FocusedElement="{Binding ElementName=InitialFocus}"
+    d:DataContext="{d:DesignInstance Type={x:Type local:NewPropertyDialog}, IsDesignTimeCreatable=True}">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="60" />
+        </Grid.RowDefinitions>
+
+        <!-- Content -->
+        <Grid
+            Margin="20">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="10" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="5" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock
+                Text="Name" />
+            <TextBox
+                x:Name="InitialFocus"
+                Grid.Column="2"
+                Text="{Binding PropertyName, UpdateSourceTrigger=PropertyChanged}" />
+
+            <TextBlock
+                Grid.Row="2"
+                Text="Type" />
+            <ComboBox
+                Grid.Row="2"
+                Grid.Column="2"
+                ItemsSource="{Binding Types}"
+                SelectedIndex="{Binding SelectedTypeIndex}"
+                DisplayMemberPath="DisplayName" />
+
+            <TextBlock
+                Grid.Row="4"
+                Text="Array?" />
+            <CheckBox
+                Grid.Row="4"
+                Grid.Column="2"
+                Margin="0 1 0 0"
+                IsChecked="{Binding PropertyIsArray}"
+                Content="{Binding PropertyIsArray}" />
+
+        </Grid>
+
+        <!-- Button strip -->
+        <Border
+            Grid.Row="1"
+            Background="#fff0f0f0">
+            <Grid
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"
+                Margin="20 0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="80" />
+                    <ColumnDefinition Width="20" />
+                    <ColumnDefinition Width="80" />
+                </Grid.ColumnDefinitions>
+                <Button
+                    IsDefault="True"
+                    Content="OK"
+                    Click="OkButton_Click"
+                    IsEnabled="{Binding IsValid}" />
+                <Button
+                    Grid.Column="2"
+                    IsCancel="True"
+                    Content="Cancel" />
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

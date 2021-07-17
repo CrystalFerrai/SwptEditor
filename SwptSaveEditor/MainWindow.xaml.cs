@@ -13,11 +13,13 @@
 // limitations under the License.
 
 using SwptSaveEditor.Document;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 
 namespace SwptSaveEditor
@@ -105,6 +107,7 @@ namespace SwptSaveEditor
                             e.Handled = true;
                             break;
                         case Key.S:
+                            Keyboard.Focus(this);
                             doc.Save();
                             e.Handled = true;
                             break;
@@ -127,9 +130,65 @@ namespace SwptSaveEditor
                         case Key.S:
                             if (ViewModel.SaveAllCommand.CanExecute(null))
                             {
+                                Keyboard.Focus(this);
                                 ViewModel.SaveAllCommand.Execute(null);
                             }
                             e.Handled = true;
+                            break;
+                    }
+                }
+                else if (Keyboard.Modifiers == ModifierKeys.Alt)
+                {
+                    switch (e.SystemKey)
+                    {
+                        case Key.Down:
+                            if (doc.MovePropertyDownCommand.CanExecute(null))
+                            {
+                                doc.MovePropertyDownCommand.Execute(null);
+                            }
+                            e.Handled = true;
+                            break;
+                        case Key.Up:
+                            if (doc.MovePropertyUpCommand.CanExecute(null))
+                            {
+                                doc.MovePropertyUpCommand.Execute(null);
+                            }
+                            e.Handled = true;
+                            break;
+                    }
+                }
+            }
+        }
+
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            base.OnKeyDown(e);
+
+            // Consider implementing a proper shortcut key service at some point
+
+            if (e.Handled == false)
+            {
+                SaveDocument doc = ViewModel.DocumentService.ActiveDocument;
+
+                if (Keyboard.Modifiers == ModifierKeys.None)
+                {
+                    switch (e.Key)
+                    {
+                        case Key.Insert:
+                            if (doc.AddPropertyCommand.CanExecute(null))
+                            {
+                                doc.AddPropertyCommand.Execute(null);
+                                e.Handled = true;
+                            }
+                            break;
+                        case Key.Delete:
+                            // This key is also handled in SaveDocumentView.xaml.cs due to DataGrid eating Delete key presses while they have focus.
+                            // This code only runs when the grid does not have keyboard focus.
+                            if (doc.RemovePropertyCommand.CanExecute(null))
+                            {
+                                doc.RemovePropertyCommand.Execute(null);
+                                e.Handled = true;
+                            }    
                             break;
                     }
                 }

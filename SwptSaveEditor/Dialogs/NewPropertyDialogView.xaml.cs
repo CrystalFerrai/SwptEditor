@@ -12,29 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using System.IO;
+using System.Windows;
 
-namespace SwptSaveLib.ValueTypes
+namespace SwptSaveEditor.Dialogs
 {
     /// <summary>
-    /// Represents a SaveProperty value of type string
+    /// View for the new property dialog
     /// </summary>
-    public class StringValue : SaveValue<string>
+    internal partial class NewPropertyDialogView : Window
     {
-        public StringValue()
-            : base(SaveValueType.String)
+        public NewPropertyDialogView()
         {
-            Data = string.Empty;
+            InitializeComponent();
         }
 
-        protected internal override void Deserialize(BinaryReader reader)
+        private void OkButton_Click(object sender, RoutedEventArgs e)
         {
-            TypedData = reader.ReadPrefixedString();
-        }
-
-        protected internal override void Serialize(BinaryWriter writer)
-        {
-            writer.WritePrefixedString(TypedData);
+            DialogResult = true;
         }
     }
 }

@@ -63,7 +63,7 @@ namespace SwptSaveEditor.Converters
                 ? l * 12.92f
                 : 1.055f * (float)Math.Pow(l, 1.0 / 2.4) - 0.055f;
 
-            return (byte)(s * 255.0f);
+            return (byte)Math.Round(s * 255.0f);
         }
 
         private float SrgbToLinear(byte sb)

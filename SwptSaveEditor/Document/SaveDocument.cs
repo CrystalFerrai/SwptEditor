@@ -12,12 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using SwptSaveEditor.Dialogs;
 using SwptSaveEditor.Undo;
 using SwptSaveEditor.Utils;
 using SwptSaveLib;
+using SwptSaveLib.ValueTypes;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Windows;
+using System.Windows.Data;
 using System.Windows.Input;
 
 namespace SwptSaveEditor.Document
@@ -36,9 +40,61 @@ namespace SwptSaveEditor.Document
         private readonly DelegateCommand mSaveCommand;
         private readonly DelegateCommand mReloadCommand;
 
+        private readonly DelegateCommand mMovePropertyUpCommand;
+        private readonly DelegateCommand mAddPropertyCommand;
+        private readonly DelegateCommand mRemovePropertyCommand;
+        private readonly DelegateCommand mMovePropertyDownCommand;
+
         public string Name => mFile.Name;
 
         public IReadOnlyList<SaveProperty> Properties => mFile.Properties;
+
+        public int SelectedPropertyIndex
+        {
+            get => _selectedPropertyIndex;
+            set
+            {
+                if (Set(ref _selectedPropertyIndex, value))
+                {
+                    mMovePropertyDownCommand.RaiseCanExecuteChanged();
+                    mMovePropertyUpCommand.RaiseCanExecuteChanged();
+                    mRemovePropertyCommand.RaiseCanExecuteChanged();
+                }
+            }
+        }
+        private int _selectedPropertyIndex;
+
+        public ListSortDirection? NameSortDirection
+        {
+            get => _nameSortDirection;
+            set
+            {
+                if (Set(ref _nameSortDirection, value))
+                {
+                    NotifyPropertyChanged(nameof(CanMoveProperties));
+                    mMovePropertyDownCommand.RaiseCanExecuteChanged();
+                    mMovePropertyUpCommand.RaiseCanExecuteChanged();
+                }
+            }
+        }
+        private ListSortDirection? _nameSortDirection = null;
+
+        public ListSortDirection? TypeSortDirection
+        {
+            get => _typeSortDirection;
+            set
+            {
+                if (Set(ref _typeSortDirection, value))
+                {
+                    NotifyPropertyChanged(nameof(CanMoveProperties));
+                    mMovePropertyDownCommand.RaiseCanExecuteChanged();
+                    mMovePropertyUpCommand.RaiseCanExecuteChanged();
+                }
+            }
+        }
+        private ListSortDirection? _typeSortDirection = null;
+
+        public bool CanMoveProperties => NameSortDirection == null && TypeSortDirection == null;
 
         public IUndoService UndoService => mUndoService;
 
@@ -50,6 +106,14 @@ namespace SwptSaveEditor.Document
 
         public ICommand ReloadCommand => mReloadCommand;
 
+        public ICommand MovePropertyDownCommand => mMovePropertyDownCommand;
+
+        public ICommand MovePropertyUpCommand => mMovePropertyUpCommand;
+
+        public ICommand AddPropertyCommand => mAddPropertyCommand;
+
+        public ICommand RemovePropertyCommand => mRemovePropertyCommand;
+
         public SaveDocument(IServiceProvider services, SaveFile file)
         {
             mFile = file;
@@ -59,6 +123,11 @@ namespace SwptSaveEditor.Document
             mRedoCommand = new DelegateCommand(mUndoService.Redo, () => mUndoService.CanRedo);
             mSaveCommand = new DelegateCommand(Save, () => !mUndoService.IsSavePoint);
             mReloadCommand = new DelegateCommand(Reload);
+
+            mMovePropertyDownCommand = new DelegateCommand(MovePropertyDown, CanMovePropertyDown);
+            mMovePropertyUpCommand = new DelegateCommand(MovePropertyUp, CanMovePropertyUp);
+            mAddPropertyCommand = new DelegateCommand(AddProperty);
+            mRemovePropertyCommand = new DelegateCommand(RemoveProperty, () => SelectedPropertyIndex >= 0);
 
             mUndoService.StateChanged += UndoService_StateChanged;
         }
@@ -112,6 +181,85 @@ namespace SwptSaveEditor.Document
             }
             mFile.Reload();
             mUndoService.Clear();
+        }
+
+        private void MovePropertyDown()
+        {
+            int index = SelectedPropertyIndex;
+
+            DelegateUndoUnit unit = DelegateUndoUnit.CreateAndExecute(
+                () => mFile.MovePropertyDown(index),
+                () => mFile.MovePropertyUp(index + 1));
+
+            mUndoService.PushUndoUnit(unit);
+        }
+
+        private void MovePropertyUp()
+        {
+            int index = SelectedPropertyIndex;
+
+            DelegateUndoUnit unit = DelegateUndoUnit.CreateAndExecute(
+                () => mFile.MovePropertyUp(index),
+                () => mFile.MovePropertyDown(index - 1));
+
+            mUndoService.PushUndoUnit(unit);
+        }
+
+        private bool CanExecutePropertyMove()
+        {
+            return CanMoveProperties && SelectedPropertyIndex >= 0;
+        }
+
+        private bool CanMovePropertyDown()
+        {
+            return CanExecutePropertyMove() && mFile.CanMovePropertyDown(SelectedPropertyIndex);
+        }
+
+        private bool CanMovePropertyUp()
+        {
+            return CanExecutePropertyMove() && mFile.CanMovePropertyUp(SelectedPropertyIndex);
+        }
+
+        private void AddProperty()
+        {
+            NewPropertyDialog dialog = new NewPropertyDialog();
+            if (dialog.ShowDialog(Application.Current.MainWindow) == true)
+            {
+                SaveProperty property = new SaveProperty(dialog.PropertyName, dialog.PropertyIsArray ? new ArrayValue(dialog.PropertyType) : SaveValue.Create(dialog.PropertyType));
+                int index = mFile.Properties.Count;
+
+                DelegateUndoUnit unit = DelegateUndoUnit.CreateAndExecute(
+                    () => mFile.AddProperty(property),
+                    () => mFile.RemoveProperty(index));
+
+                mUndoService.PushUndoUnit(unit);
+            }
+        }
+
+        private void RemoveProperty()
+        {
+            ICollectionView view = CollectionViewSource.GetDefaultView(mFile.Properties);
+            view.MoveCurrentToPosition(SelectedPropertyIndex);
+            
+            SaveProperty property = (SaveProperty)view.CurrentItem;
+            int index = mFile.IndexOfProperty(property);
+
+            DelegateUndoUnit unit = DelegateUndoUnit.CreateAndExecute(
+                () =>
+                {
+                    view.MoveCurrentToNext();
+                    mFile.RemoveProperty(index);
+                    if (view.IsCurrentAfterLast) view.MoveCurrentToLast();
+                    SelectedPropertyIndex = view.CurrentPosition;
+                },
+                () =>
+                {
+                    mFile.InsertProperty(index, property);
+                    view.MoveCurrentTo(property);
+                    SelectedPropertyIndex = view.CurrentPosition;
+                });
+            
+            mUndoService.PushUndoUnit(unit);
         }
     }
 }

@@ -24,6 +24,7 @@ namespace SwptSaveLib.ValueTypes
         public Vector2Value()
             : base(SaveValueType.Vector2)
         {
+            Data = new Vector2();
         }
 
         public override object CloneData()

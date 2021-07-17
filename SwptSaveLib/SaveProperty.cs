@@ -38,7 +38,7 @@ namespace SwptSaveLib
         }
         private SaveValue _value;
 
-        internal SaveProperty(string name, SaveValue value)
+        public SaveProperty(string name, SaveValue value)
         {
             Name = name;
             Value = value;

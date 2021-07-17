@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Collections.Generic;
+
 namespace SwptSaveLib
 {
     /// <summary>
@@ -49,6 +51,17 @@ namespace SwptSaveLib
                 case SaveValueType.LinearColor: return "Color";
                 default: return "Unknown";
             }
+        }
+
+        public static IEnumerable<SaveValueType> GetOrderedTypes()
+        {
+            yield return SaveValueType.String;
+            yield return SaveValueType.Bool;
+            yield return SaveValueType.Int32;
+            yield return SaveValueType.Single;
+            yield return SaveValueType.Vector2;
+            yield return SaveValueType.Vector3;
+            yield return SaveValueType.LinearColor;
         }
     }
 }

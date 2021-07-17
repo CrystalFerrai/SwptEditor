@@ -99,6 +99,10 @@
     <Compile Include="Converters\PrimitiveToStringConverter.cs" />
     <Compile Include="Converters\ColorConverter.cs" />
     <Compile Include="Behaviors\DataGridBehavior.cs" />
+    <Compile Include="Dialogs\NewPropertyDialog.cs" />
+    <Compile Include="Dialogs\NewPropertyDialogView.xaml.cs">
+      <DependentUpon>NewPropertyDialogView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Document\DocumentService.cs" />
     <Compile Include="Document\SaveDocument.cs" />
     <Compile Include="Document\SaveDocumentView.xaml.cs">
@@ -119,6 +123,7 @@
     <Compile Include="Undo\IUndoUnit.cs" />
     <Compile Include="Undo\UndoGroup.cs" />
     <Compile Include="Undo\UndoService.cs" />
+    <Compile Include="Utils\BindingProxy.cs" />
     <Compile Include="Utils\DataErrorHelper.cs" />
     <Compile Include="Utils\DelegateCommand.cs" />
     <Compile Include="Utils\IServiceProviderExtensions.cs" />
@@ -130,6 +135,10 @@
   </ItemGroup>
   <ItemGroup>
     <Page Include="Controls\ArrayEditor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\NewPropertyDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -193,6 +202,15 @@
     <Resource Include="Images\Markers\ArrowDown.png" />
     <Resource Include="Images\Markers\ArrowUp.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ToolbarIcons\Add.png" />
+    <Resource Include="Images\ToolbarIcons\Remove.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\ToolbarIcons\MoveDown.png" />
+    <Resource Include="Images\ToolbarIcons\MoveUp.png" />
+  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

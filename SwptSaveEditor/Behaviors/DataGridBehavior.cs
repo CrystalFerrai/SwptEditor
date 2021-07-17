@@ -119,11 +119,13 @@ namespace SwptSaveEditor.Behaviors
                 // Note: Must listen for row edit ending because cell edit ending is skipped when pressing Enter to commit.
                 // This will likely break things if a grid has more than one editable column and this property is attached.
                 grid.PreparingCellForEdit += Grid_PreparingCellForEdit;
+                grid.CellEditEnding += Grid_CellEditEnding;
                 grid.RowEditEnding += Grid_RowEditEnding;
             }
             else
             {
                 grid.PreparingCellForEdit -= Grid_PreparingCellForEdit;
+                grid.CellEditEnding -= Grid_CellEditEnding;
                 grid.RowEditEnding -= Grid_RowEditEnding;
             }
         }
@@ -137,6 +139,23 @@ namespace SwptSaveEditor.Behaviors
             if (value == null) return;
 
             sEditBackupStack.Push(new EditRecord() { Value = value, DataBackup = value.CloneData() });
+        }
+
+        private static void Grid_CellEditEnding(object sender, DataGridCellEditEndingEventArgs e)
+        {
+            DataGrid grid = (DataGrid)sender;
+
+            // Make every cell edit also a row edit.
+            grid.CellEditEnding -= Grid_CellEditEnding;
+            if (e.EditAction == DataGridEditAction.Commit)
+            {
+                grid.CommitEdit(DataGridEditingUnit.Row, true);
+            }
+            else
+            {
+                grid.CancelEdit(DataGridEditingUnit.Row);
+            }
+            grid.CellEditEnding += Grid_CellEditEnding;
         }
 
         private static void Grid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)

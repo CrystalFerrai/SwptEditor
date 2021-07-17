@@ -77,6 +77,61 @@ namespace SwptSaveLib
             LoadFrom(mPath);
         }
 
+        public void AddProperty(SaveProperty property)
+        {
+            mProperties.Add(property);
+            mProperties.NotifyCollectionChanged();
+        }
+
+        public void InsertProperty(int index, SaveProperty property)
+        {
+            mProperties.Insert(index, property);
+            mProperties.NotifyCollectionChanged();
+        }
+
+        public void RemoveProperty(int index)
+        {
+            mProperties.RemoveAt(index);
+            mProperties.NotifyCollectionChanged();
+        }
+
+        public void MovePropertyDown(int index)
+        {
+            if (!CanMovePropertyDown(index)) return;
+
+            SaveProperty property = mProperties[index];
+            mProperties.RemoveAt(index);
+            mProperties.Insert(index + 1, property);
+
+            mProperties.NotifyCollectionChanged();
+        }
+
+        public void MovePropertyUp(int index)
+        {
+            if (!CanMovePropertyUp(index)) return;
+
+            SaveProperty property = mProperties[index];
+            mProperties.RemoveAt(index);
+            mProperties.Insert(index - 1, property);
+
+            mProperties.NotifyCollectionChanged();
+        }
+
+        public bool CanMovePropertyDown(int index)
+        {
+            return index < mProperties.Count - 1;
+        }
+
+        public bool CanMovePropertyUp(int index)
+        {
+            return index >= 1 && index < mProperties.Count;
+        }
+
+        public int IndexOfProperty(SaveProperty property)
+        {
+            return mProperties.IndexOf(property);
+        }
+
         public override string ToString()
         {
             return Name;
