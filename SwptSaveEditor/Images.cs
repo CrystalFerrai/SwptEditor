@@ -52,9 +52,11 @@ namespace SwptSaveEditor
             public static ImageSource AddFolder { get; private set; }
             public static ImageSource Close { get; private set; }
             public static ImageSource CloseAlt { get; private set; }
+            public static ImageSource Copy { get; private set; }
             public static ImageSource MoveDown { get; private set; }
             public static ImageSource MoveUp { get; private set; }
             public static ImageSource OpenFolder { get; private set; }
+            public static ImageSource Paste { get; private set; }
             public static ImageSource Redo { get; private set; }
             public static ImageSource Refresh { get; private set; }
             public static ImageSource Remove { get; private set; }

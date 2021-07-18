@@ -20,6 +20,9 @@ using SwptSaveLib.ValueTypes;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
+using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -41,6 +44,8 @@ namespace SwptSaveEditor.Document
         private readonly DelegateCommand mReloadCommand;
 
         private readonly DelegateCommand mClearFilterCommand;
+        private readonly DelegateCommand mCopyPropertyCommand;
+        private readonly DelegateCommand mPastePropertyCommand;
         private readonly DelegateCommand mMovePropertyUpCommand;
         private readonly DelegateCommand mAddPropertyCommand;
         private readonly DelegateCommand mRemovePropertyCommand;
@@ -57,6 +62,7 @@ namespace SwptSaveEditor.Document
             {
                 if (Set(ref _selectedPropertyIndex, value))
                 {
+                    mCopyPropertyCommand.RaiseCanExecuteChanged();
                     mMovePropertyDownCommand.RaiseCanExecuteChanged();
                     mMovePropertyUpCommand.RaiseCanExecuteChanged();
                     mRemovePropertyCommand.RaiseCanExecuteChanged();
@@ -136,6 +142,10 @@ namespace SwptSaveEditor.Document
 
         public ICommand ClearFilterCommand => mClearFilterCommand;
 
+        public ICommand CopyPropertyCommand => mCopyPropertyCommand;
+
+        public ICommand PastePropertyCommand => mPastePropertyCommand;
+
         public ICommand MovePropertyDownCommand => mMovePropertyDownCommand;
 
         public ICommand MovePropertyUpCommand => mMovePropertyUpCommand;
@@ -155,6 +165,8 @@ namespace SwptSaveEditor.Document
             mReloadCommand = new DelegateCommand(Reload);
 
             mClearFilterCommand = new DelegateCommand(ClearFilter, () => !string.IsNullOrEmpty(PropertyFilter));
+            mCopyPropertyCommand = new DelegateCommand(CopyProperty, () => SelectedPropertyIndex >= 0);
+            mPastePropertyCommand = new DelegateCommand(PasteProperty);
             mMovePropertyDownCommand = new DelegateCommand(MovePropertyDown, CanMovePropertyDown);
             mMovePropertyUpCommand = new DelegateCommand(MovePropertyUp, CanMovePropertyUp);
             mAddPropertyCommand = new DelegateCommand(AddProperty);
@@ -217,6 +229,59 @@ namespace SwptSaveEditor.Document
         private void ClearFilter()
         {
             PropertyFilter = string.Empty;
+        }
+
+        private void CopyProperty()
+        {
+            ICollectionView view = CollectionViewSource.GetDefaultView(mFile.Properties);
+            view.MoveCurrentToPosition(SelectedPropertyIndex);
+
+            SaveProperty property = (SaveProperty)view.CurrentItem;
+
+            using (MemoryStream stream = new MemoryStream())
+            using (BinaryWriter writer = new BinaryWriter(stream))
+            {
+                property.Save(writer);
+
+                for (int tries = 3; tries > 0; --tries)
+                {
+                    try
+                    {
+                        Clipboard.SetData(DataFormats.Serializable, stream.ToArray());
+                        tries = 0;
+                    }
+                    catch (ExternalException)
+                    {
+                        Thread.Sleep(1);
+                    }
+                }
+            }
+        }
+
+        private void PasteProperty()
+        {
+            try
+            {
+                byte[] data = Clipboard.GetData(DataFormats.Serializable) as byte[];
+                if (data != null)
+                {
+                    using (MemoryStream stream = new MemoryStream(data))
+                    using (BinaryReader reader = new BinaryReader(stream))
+                    {
+                        SaveProperty property = SaveProperty.Load(reader);
+                        int index = mFile.Properties.Count;
+
+                        DelegateUndoUnit unit = DelegateUndoUnit.CreateAndExecute(
+                            () => mFile.AddProperty(property),
+                            () => mFile.RemoveProperty(index));
+
+                        mUndoService.PushUndoUnit(unit);
+                    }
+                }
+            }
+            catch
+            {
+            }
         }
 
         private void MovePropertyDown()

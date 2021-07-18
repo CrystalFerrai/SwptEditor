@@ -42,19 +42,28 @@ namespace SwptSaveEditor.Document
 
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
         {
-            // DataGrid eats delete key presses when it has focus. We intercept it here first and decide if we want to delete the selected row.
-            // This is also handled in MainWindow.xaml.cs for the case where the grid does not have focus.
-            if (Keyboard.Modifiers == ModifierKeys.None && e.Key == Key.Delete)
+            // DataGrid eats certain key presses when it has focus. We intercept it here first and decide if we want to delete the selected row.
+            // These are also handled in MainWindow.xaml.cs for the case where the grid does not have focus.
+
+            DataGrid grid = (DataGrid)sender;
+            DataGridRow row = (DataGridRow)grid.ItemContainerGenerator.ContainerFromIndex(grid.SelectedIndex);
+            if (!row.IsEditing)
             {
-                DataGrid grid = (DataGrid)sender;
-                DataGridRow row = (DataGridRow)grid.ItemContainerGenerator.ContainerFromIndex(grid.SelectedIndex);
-                if (!row.IsEditing)
+                if (Keyboard.Modifiers == ModifierKeys.None && e.Key == Key.Delete)
                 {
                     if (ViewModel.RemovePropertyCommand.CanExecute(null))
                     {
                         ViewModel.RemovePropertyCommand.Execute(null);
                         e.Handled = true;
                         grid.Focus();
+                    }
+                }
+                else if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.C)
+                {
+                    if (ViewModel.CopyPropertyCommand.CanExecute(null))
+                    {
+                        ViewModel.CopyPropertyCommand.Execute(null);
+                        e.Handled = true;
                     }
                 }
             }

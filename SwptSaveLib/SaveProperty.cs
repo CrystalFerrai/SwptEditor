@@ -51,7 +51,7 @@ namespace SwptSaveLib
             return property;
         }
 
-        internal static SaveProperty Load(BinaryReader reader)
+        public static SaveProperty Load(BinaryReader reader)
         {
             if (reader.ReadByte() != PrefixByte) throw new FormatException("Unexpected value in save file");
 
@@ -83,7 +83,7 @@ namespace SwptSaveLib
             return new SaveProperty(name, value);
         }
 
-        internal void Save(BinaryWriter writer)
+        public void Save(BinaryWriter writer)
         {
             writer.Write(PrefixByte);
             writer.WritePrefixedString(Name);

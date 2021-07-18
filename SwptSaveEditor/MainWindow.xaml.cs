@@ -211,6 +211,28 @@ namespace SwptSaveEditor
                             break;
                     }
                 }
+                else if (Keyboard.Modifiers == ModifierKeys.Control)
+                {
+                    switch (e.Key)
+                    {
+                        case Key.C:
+                            if (doc == null) break;
+                            if (doc.CopyPropertyCommand.CanExecute(null))
+                            {
+                                doc.CopyPropertyCommand.Execute(null);
+                                e.Handled = true;
+                            }
+                            break;
+                        case Key.V:
+                            if (doc == null) break;
+                            if (doc.PastePropertyCommand.CanExecute(null))
+                            {
+                                doc.PastePropertyCommand.Execute(null);
+                                e.Handled = true;
+                            }
+                            break;
+                    }
+                }
             }
         }
 
