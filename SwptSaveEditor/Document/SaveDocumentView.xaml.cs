@@ -27,9 +27,15 @@ namespace SwptSaveEditor.Document
             InitializeComponent();
 
             Loaded += SaveDocumentView_Loaded;
+            DataContextChanged += SaveDocumentView_DataContextChanged;
         }
 
         private void SaveDocumentView_Loaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel.FilterElement = FilterTextBox;
+        }
+
+        private void SaveDocumentView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
             ViewModel.FilterElement = FilterTextBox;
         }

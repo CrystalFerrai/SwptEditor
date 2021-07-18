@@ -64,6 +64,7 @@ namespace SwptSaveEditor
                     switch (e.Key)
                     {
                         case Key.F5:
+                            if (doc == null) break;
                             if (doc.ReloadCommand.CanExecute(null))
                             {
                                 doc.ReloadCommand.Execute(null);
@@ -77,6 +78,7 @@ namespace SwptSaveEditor
                     switch (e.Key)
                     {
                         case Key.F:
+                            if (doc == null) break;
                             Keyboard.Focus(doc.FilterElement);
                             e.Handled = true;
                             break;
@@ -109,16 +111,19 @@ namespace SwptSaveEditor
                             e.Handled = true;
                             break;
                         case Key.S:
+                            if (doc == null) break;
                             Keyboard.Focus(this);
                             doc.Save();
                             e.Handled = true;
                             break;
                         case Key.Y:
+                            if (doc == null) break;
                             Keyboard.Focus(this);
                             doc.UndoService.Redo();
                             e.Handled = true;
                             break;
                         case Key.Z:
+                            if (doc == null) break;
                             Keyboard.Focus(this);
                             doc.UndoService.Undo();
                             e.Handled = true;
@@ -144,6 +149,7 @@ namespace SwptSaveEditor
                     switch (e.SystemKey)
                     {
                         case Key.Down:
+                            if (doc == null) break;
                             if (doc.MovePropertyDownCommand.CanExecute(null))
                             {
                                 doc.MovePropertyDownCommand.Execute(null);
@@ -151,6 +157,7 @@ namespace SwptSaveEditor
                             e.Handled = true;
                             break;
                         case Key.Up:
+                            if (doc == null) break;
                             if (doc.MovePropertyUpCommand.CanExecute(null))
                             {
                                 doc.MovePropertyUpCommand.Execute(null);
@@ -177,6 +184,7 @@ namespace SwptSaveEditor
                     switch (e.Key)
                     {
                         case Key.Insert:
+                            if (doc == null) break;
                             if (doc.AddPropertyCommand.CanExecute(null))
                             {
                                 doc.AddPropertyCommand.Execute(null);
@@ -184,6 +192,7 @@ namespace SwptSaveEditor
                             }
                             break;
                         case Key.Delete:
+                            if (doc == null) break;
                             // This key is also handled in SaveDocumentView.xaml.cs due to DataGrid eating Delete key presses while they have focus.
                             // This code only runs when the grid does not have keyboard focus.
                             if (doc.RemovePropertyCommand.CanExecute(null))
@@ -193,6 +202,7 @@ namespace SwptSaveEditor
                             }    
                             break;
                         case Key.Escape:
+                            if (doc == null) break;
                             if (doc.ClearFilterCommand.CanExecute(null))
                             {
                                 doc.ClearFilterCommand.Execute(null);
