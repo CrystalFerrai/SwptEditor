@@ -32,6 +32,30 @@
         <Border
             Background="#fff8f8f8"
             Padding="4">
+            <Border.Resources>
+                <Style
+                    TargetType="{x:Type Separator}">
+                    <Setter Property="Template">
+                        <Setter.Value>
+                            <ControlTemplate
+                                TargetType="{x:Type Separator}">
+                                <Border
+                                    Margin="2 0"
+                                    Width="1"
+                                    VerticalAlignment="Stretch"
+                                    Background="#ffa0a0a0"/>
+                            </ControlTemplate>
+                        </Setter.Value>
+                    </Setter>
+                </Style>
+
+                <Style
+                    x:Key="BorderlessButton"
+                    TargetType="{x:Type Button}">
+                    <Setter Property="Background" Value="Transparent" />
+                    <Setter Property="BorderThickness" Value="0" />
+                </Style>
+            </Border.Resources>
             <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
@@ -44,6 +68,10 @@
                     <ColumnDefinition Width="4" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="4" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="4" />
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="4" />
                     <ColumnDefinition Width="Auto" />
@@ -76,12 +104,8 @@
                         Style="{StaticResource ButtonContentStyle}" />
                 </Button>
 
-                <Border
-                    Grid.Column="4"
-                    Margin="2 0"
-                    Width="1"
-                    VerticalAlignment="Stretch"
-                    Background="#ffa0a0a0"/>
+                <Separator
+                    Grid.Column="4" />
 
                 <Button
                     Grid.Column="6"
@@ -105,8 +129,47 @@
                         Style="{StaticResource ButtonContentStyle}" />
                 </Button>
 
+                <!-- * -->
+
+                <Grid
+                    Grid.Column="10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="5" />
+                        <ColumnDefinition Width="100" />
+                        <ColumnDefinition Width="2" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Text="Filter" />
+
+                    <TextBox
+                        x:Name="FilterTextBox"
+                        Grid.Column="2"
+                        ToolTip="Filter Properties by Name (Ctrl+F)"
+                        Text="{Binding PropertyFilter, UpdateSourceTrigger=PropertyChanged}" />
+
+                    <Button
+                        Grid.Column="4"
+                        ToolTip="Clear Filter (Esc)"
+                        ToolTipService.ShowOnDisabled="True"
+                        Command="{Binding ClearFilterCommand}"
+                        Style="{StaticResource BorderlessButton}">
+                        <Image
+                            Stretch="None"
+                            Source="{x:Static root:Images+ToolbarIcons.CloseAlt}"
+                            Style="{StaticResource ButtonContentStyle}" />
+                    </Button>
+
+                </Grid>
+
+                <Separator
+                    Grid.Column="12" />
+
                 <Button
-                    Grid.Column="10"
+                    Grid.Column="14"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding MovePropertyUpCommand}">
                     <Button.Style>
@@ -118,7 +181,7 @@
                                     <Setter Property="ToolBar.ToolTip">
                                         <Setter.Value>
                                             <TextBlock>
-                                                <Run Text="Move Property Up (Alt+Up)" /><LineBreak /><Run FontStyle="Italic" Text="All columns must be unsorted" />
+                                                <Run Text="Move Property Up (Alt+Up)" /><LineBreak /><Run FontStyle="Italic" Text="Properties must be unsorted and unfiltered" />
                                             </TextBlock>
                                         </Setter.Value>
                                     </Setter>
@@ -133,7 +196,7 @@
                 </Button>
 
                 <Button
-                    Grid.Column="12"
+                    Grid.Column="16"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding MovePropertyDownCommand}">
                     <Button.Style>
@@ -145,7 +208,7 @@
                                     <Setter Property="ToolBar.ToolTip">
                                         <Setter.Value>
                                             <TextBlock>
-                                                <Run Text="Move Property Down (Alt+Down)" /><LineBreak /><Run FontStyle="Italic" Text="All columns must be unsorted" />
+                                                <Run Text="Move Property Down (Alt+Down)" /><LineBreak /><Run FontStyle="Italic" Text="Properties must be unsorted and unfiltered" />
                                             </TextBlock>
                                         </Setter.Value>
                                     </Setter>
@@ -159,15 +222,11 @@
                         Style="{StaticResource ButtonContentStyle}" />
                 </Button>
 
-                <Border
-                    Grid.Column="14"
-                    Margin="2 0"
-                    Width="1"
-                    VerticalAlignment="Stretch"
-                    Background="#ffa0a0a0"/>
+                <Separator
+                    Grid.Column="18" />
 
                 <Button
-                    Grid.Column="16"
+                    Grid.Column="20"
                     ToolTip="Add Property (Ins)"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding AddPropertyCommand}">
@@ -178,7 +237,7 @@
                 </Button>
 
                 <Button
-                    Grid.Column="18"
+                    Grid.Column="22"
                     ToolTip="Remove Property (Del)"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding RemovePropertyCommand}">

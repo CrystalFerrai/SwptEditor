@@ -40,6 +40,7 @@ namespace SwptSaveEditor.Document
         private readonly DelegateCommand mSaveCommand;
         private readonly DelegateCommand mReloadCommand;
 
+        private readonly DelegateCommand mClearFilterCommand;
         private readonly DelegateCommand mMovePropertyUpCommand;
         private readonly DelegateCommand mAddPropertyCommand;
         private readonly DelegateCommand mRemovePropertyCommand;
@@ -94,7 +95,34 @@ namespace SwptSaveEditor.Document
         }
         private ListSortDirection? _typeSortDirection = null;
 
-        public bool CanMoveProperties => NameSortDirection == null && TypeSortDirection == null;
+        public string PropertyFilter
+        {
+            get => _propertyFilter;
+            set
+            {
+                if (Set(ref _propertyFilter, value))
+                {
+                    ICollectionView view = CollectionViewSource.GetDefaultView(mFile.Properties);
+                    if (string.IsNullOrWhiteSpace(value))
+                    {
+                        view.Filter = null;
+                    }
+                    else
+                    {
+                        view.Filter = (obj) => ((SaveProperty)obj).Name.ToLowerInvariant().Contains(value.Trim().ToLowerInvariant());
+                    }
+                    NotifyPropertyChanged(nameof(CanMoveProperties));
+                    mMovePropertyDownCommand.RaiseCanExecuteChanged();
+                    mMovePropertyUpCommand.RaiseCanExecuteChanged();
+                    mClearFilterCommand.RaiseCanExecuteChanged();
+                }
+            }
+        }
+        private string _propertyFilter;
+
+        public bool CanMoveProperties => NameSortDirection == null && TypeSortDirection == null && string.IsNullOrWhiteSpace(PropertyFilter);
+
+        public IInputElement FilterElement { get; set; }
 
         public IUndoService UndoService => mUndoService;
 
@@ -105,6 +133,8 @@ namespace SwptSaveEditor.Document
         public ICommand SaveCommand => mSaveCommand;
 
         public ICommand ReloadCommand => mReloadCommand;
+
+        public ICommand ClearFilterCommand => mClearFilterCommand;
 
         public ICommand MovePropertyDownCommand => mMovePropertyDownCommand;
 
@@ -124,6 +154,7 @@ namespace SwptSaveEditor.Document
             mSaveCommand = new DelegateCommand(Save, () => !mUndoService.IsSavePoint);
             mReloadCommand = new DelegateCommand(Reload);
 
+            mClearFilterCommand = new DelegateCommand(ClearFilter, () => !string.IsNullOrEmpty(PropertyFilter));
             mMovePropertyDownCommand = new DelegateCommand(MovePropertyDown, CanMovePropertyDown);
             mMovePropertyUpCommand = new DelegateCommand(MovePropertyUp, CanMovePropertyUp);
             mAddPropertyCommand = new DelegateCommand(AddProperty);
@@ -181,6 +212,11 @@ namespace SwptSaveEditor.Document
             }
             mFile.Reload();
             mUndoService.Clear();
+        }
+
+        private void ClearFilter()
+        {
+            PropertyFilter = string.Empty;
         }
 
         private void MovePropertyDown()

@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 
@@ -24,6 +25,13 @@ namespace SwptSaveEditor.Document
         public SaveDocumentView()
         {
             InitializeComponent();
+
+            Loaded += SaveDocumentView_Loaded;
+        }
+
+        private void SaveDocumentView_Loaded(object sender, RoutedEventArgs e)
+        {
+            ViewModel.FilterElement = FilterTextBox;
         }
 
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)

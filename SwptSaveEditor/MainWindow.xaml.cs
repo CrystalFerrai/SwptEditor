@@ -13,13 +13,11 @@
 // limitations under the License.
 
 using SwptSaveEditor.Document;
-using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
-using System.Windows.Interop;
 using System.Windows.Media;
 
 namespace SwptSaveEditor
@@ -78,6 +76,10 @@ namespace SwptSaveEditor
                 {
                     switch (e.Key)
                     {
+                        case Key.F:
+                            Keyboard.Focus(doc.FilterElement);
+                            e.Handled = true;
+                            break;
                         case Key.F4:
                             if (ViewModel.CloseCommand.CanExecute(null))
                             {
@@ -189,6 +191,13 @@ namespace SwptSaveEditor
                                 doc.RemovePropertyCommand.Execute(null);
                                 e.Handled = true;
                             }    
+                            break;
+                        case Key.Escape:
+                            if (doc.ClearFilterCommand.CanExecute(null))
+                            {
+                                doc.ClearFilterCommand.Execute(null);
+                                e.Handled = true;
+                            }
                             break;
                     }
                 }

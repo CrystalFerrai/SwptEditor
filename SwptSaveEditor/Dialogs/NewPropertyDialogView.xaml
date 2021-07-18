@@ -25,6 +25,7 @@
     ResizeMode="NoResize"
     Width="300"
     SizeToContent="Height"
+    WindowStartupLocation="CenterOwner"
     FocusManager.FocusedElement="{Binding ElementName=InitialFocus}"
     d:DataContext="{d:DesignInstance Type={x:Type local:NewPropertyDialog}, IsDesignTimeCreatable=True}">
     <Grid>
