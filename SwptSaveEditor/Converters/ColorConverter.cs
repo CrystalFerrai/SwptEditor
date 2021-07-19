@@ -57,7 +57,7 @@ namespace SwptSaveEditor.Converters
         private byte LinearToSrgb(float l)
         {
             if (l <= 0.0f) return 0;
-            if (l >= 1.0f) return 1;
+            if (l >= 1.0f) return 255;
 
             float s = l <= 0.0031308f
                 ? l * 12.92f
