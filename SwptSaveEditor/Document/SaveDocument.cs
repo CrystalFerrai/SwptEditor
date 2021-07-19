@@ -287,13 +287,50 @@ namespace SwptSaveEditor.Document
                     using (BinaryReader reader = new BinaryReader(stream))
                     {
                         SaveProperty property = SaveProperty.Load(reader);
-                        int index = mFile.Properties.Count;
 
-                        DelegateUndoUnit unit = DelegateUndoUnit.CreateAndExecute(
-                            () => mFile.AddProperty(property),
-                            () => mFile.RemoveProperty(index));
+                        UndoGroup group = new UndoGroup();
 
-                        mUndoService.PushUndoUnit(unit);
+                        int index = mFile.IndexOfProperty(property.Name);
+                        if (index >= 0)
+                        {
+                            int nextIndex = mFile.IndexOfProperty(property.Name, index + 1);
+                            if (nextIndex >= 0)
+                            {
+                                // More than one property already exists with the same name, so just add another
+                                index = mFile.Properties.Count;
+                            }
+                            else
+                            {
+                                // Found a property with the same name. Replace it or add as new (prompt user)?
+                                PastePropertyDialog dialog = new PastePropertyDialog(property.Name);
+                                switch (dialog.ShowDialog(Application.Current.MainWindow))
+                                {
+                                    case PastePropertyDialogResult.Cancel:
+                                        return;
+                                    case PastePropertyDialogResult.Replace:
+                                        {
+                                            SaveProperty oldProperty = mFile.Properties[index];
+                                            group.Add(DelegateUndoUnit.CreateAndExecute(
+                                                () => mFile.RemoveProperty(index),
+                                                () => mFile.InsertProperty(index, oldProperty)));
+                                        }
+                                        break;
+                                    case PastePropertyDialogResult.AddNew:
+                                        index = mFile.Properties.Count;
+                                        break;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            index = mFile.Properties.Count;
+                        }
+
+                        group.Add(DelegateUndoUnit.CreateAndExecute(
+                            () => mFile.InsertProperty(index, property),
+                            () => mFile.RemoveProperty(index)));
+
+                        mUndoService.PushUndoUnit(group);
                     }
                 }
             }

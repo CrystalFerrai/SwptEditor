@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using SwptSaveLib.Utils;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -130,6 +131,18 @@ namespace SwptSaveLib
         public int IndexOfProperty(SaveProperty property)
         {
             return mProperties.IndexOf(property);
+        }
+
+        public int IndexOfProperty(string propertyName, int startIndex = 0)
+        {
+            for (int i = startIndex; i < mProperties.Count; ++i)
+            {
+                if (mProperties[i].Name.Equals(propertyName, StringComparison.Ordinal))
+                {
+                    return i;
+                }
+            }
+            return -1;
         }
 
         public override string ToString()

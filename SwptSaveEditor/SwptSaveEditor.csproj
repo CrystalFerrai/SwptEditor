@@ -84,6 +84,10 @@
     <Compile Include="Dialogs\NewPropertyDialogView.xaml.cs">
       <DependentUpon>NewPropertyDialogView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\PastePropertyDialog.cs" />
+    <Compile Include="Dialogs\PastePropertyDialogView.xaml.cs">
+      <DependentUpon>PastePropertyDialogView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Dialogs\RenamePropertyDialog.cs" />
     <Compile Include="Dialogs\RenamePropertyDialogView.xaml.cs">
       <DependentUpon>RenamePropertyDialogView.xaml</DependentUpon>
@@ -124,6 +128,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Dialogs\NewPropertyDialogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Dialogs\PastePropertyDialogView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
