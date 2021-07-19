@@ -20,7 +20,8 @@
     xmlns:root="clr-namespace:SwptSaveEditor"
     xmlns:b="clr-namespace:SwptSaveEditor.Behaviors"
     xmlns:c="clr-namespace:SwptSaveEditor.Controls"
-    xmlns:u="clr-namespace:SwptSaveEditor.Utils">
+    xmlns:u="clr-namespace:SwptSaveEditor.Utils"
+    FocusManager.FocusedElement="{Binding ElementName=PropertyGrid}">
     
     <Grid>
         <Grid.RowDefinitions>
@@ -301,6 +302,7 @@
         
         <!-- Tab data -->
         <DataGrid
+            x:Name="PropertyGrid"
             Grid.Row="1"
             AutoGenerateColumns="False"
             FontFamily="Courier New"

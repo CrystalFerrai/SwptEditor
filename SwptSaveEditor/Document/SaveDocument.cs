@@ -297,7 +297,7 @@ namespace SwptSaveEditor.Document
                             if (nextIndex >= 0)
                             {
                                 // More than one property already exists with the same name, so just add another
-                                index = mFile.Properties.Count;
+                                index = GetInsertionIndex();
                             }
                             else
                             {
@@ -312,22 +312,32 @@ namespace SwptSaveEditor.Document
                                             SaveProperty oldProperty = mFile.Properties[index];
                                             group.Add(DelegateUndoUnit.CreateAndExecute(
                                                 () => mFile.RemoveProperty(index),
-                                                () => mFile.InsertProperty(index, oldProperty)));
+                                                () =>
+                                                {
+                                                    mFile.InsertProperty(index, oldProperty);
+                                                    int viewIndex = IndexOfViewProperty(oldProperty);
+                                                    if (viewIndex >= 0) SelectedPropertyIndex = viewIndex;
+                                                }));
                                         }
                                         break;
                                     case PastePropertyDialogResult.AddNew:
-                                        index = mFile.Properties.Count;
+                                        index = GetInsertionIndex();
                                         break;
                                 }
                             }
                         }
                         else
                         {
-                            index = mFile.Properties.Count;
+                            index = GetInsertionIndex();
                         }
 
                         group.Add(DelegateUndoUnit.CreateAndExecute(
-                            () => mFile.InsertProperty(index, property),
+                            () =>
+                            {
+                                mFile.InsertProperty(index, property);
+                                int viewIndex = IndexOfViewProperty(property);
+                                if (viewIndex >= 0) SelectedPropertyIndex = viewIndex;
+                            },
                             () => mFile.RemoveProperty(index)));
 
                         mUndoService.PushUndoUnit(group);
@@ -382,11 +392,20 @@ namespace SwptSaveEditor.Document
             if (dialog.ShowDialog(Application.Current.MainWindow) == true)
             {
                 SaveProperty property = new SaveProperty(dialog.PropertyName, dialog.PropertyIsArray ? new ArrayValue(dialog.PropertyType) : SaveValue.Create(dialog.PropertyType));
-                int index = mFile.Properties.Count;
+                int index = GetInsertionIndex();
 
                 DelegateUndoUnit unit = DelegateUndoUnit.CreateAndExecute(
-                    () => mFile.AddProperty(property),
-                    () => mFile.RemoveProperty(index));
+                    () =>
+                    {
+                        mFile.InsertProperty(index, property);
+                        SelectedPropertyIndex = IndexOfViewProperty(property);
+                    },
+                    () =>
+                    {
+                        int viewIndex = IndexOfViewProperty(property);
+                        mFile.RemoveProperty(index);
+                        if (viewIndex >= 0) SelectedPropertyIndex = Math.Max(0, viewIndex - 1);
+                    });
 
                 mUndoService.PushUndoUnit(unit);
             }
@@ -423,6 +442,18 @@ namespace SwptSaveEditor.Document
             ICollectionView view = CollectionViewSource.GetDefaultView(mFile.Properties);
             view.MoveCurrentToPosition(SelectedPropertyIndex);
             return (SaveProperty)view.CurrentItem;
+        }
+
+        private int IndexOfViewProperty(SaveProperty property)
+        {
+            ICollectionView view = CollectionViewSource.GetDefaultView(mFile.Properties);
+            view.MoveCurrentTo(property);
+            return view.CurrentPosition;
+        }
+
+        private int GetInsertionIndex()
+        {
+            return SelectedPropertyIndex >= 0 ? mFile.IndexOfProperty(GetSelectedProperty()) + 1 : mFile.Properties.Count;
         }
     }
 }

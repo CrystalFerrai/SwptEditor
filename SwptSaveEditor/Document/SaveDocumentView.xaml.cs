@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using SwptSaveEditor.Undo;
+using System;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -37,7 +39,18 @@ namespace SwptSaveEditor.Document
 
         private void SaveDocumentView_DataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
         {
+            if (e.OldValue != null)
+            {
+                WeakEventManager<IUndoService, EventArgs>.RemoveHandler(((SaveDocument)e.OldValue).UndoService, nameof(IUndoService.StateChanged), UndoService_StateChanged);
+            }
+
             ViewModel.FilterElement = FilterTextBox;
+            WeakEventManager<IUndoService, EventArgs>.AddHandler(ViewModel.UndoService, nameof(IUndoService.StateChanged), UndoService_StateChanged);
+        }
+
+        private void UndoService_StateChanged(object sender, EventArgs e)
+        {
+            PropertyGrid.Focus();
         }
 
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
