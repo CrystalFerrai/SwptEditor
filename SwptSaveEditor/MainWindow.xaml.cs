@@ -63,6 +63,14 @@ namespace SwptSaveEditor
                 {
                     switch (e.Key)
                     {
+                        case Key.F2:
+                            if (doc == null) break;
+                            if (doc.RenamePropertyCommand.CanExecute(null))
+                            {
+                                doc.RenamePropertyCommand.Execute(null);
+                            }
+                            e.Handled = true;
+                            break;
                         case Key.F5:
                             if (doc == null) break;
                             if (doc.ReloadCommand.CanExecute(null))

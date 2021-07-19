@@ -44,7 +44,7 @@ namespace SwptSaveEditor.Dialogs
         private string _propertyName;
 
         /// <summary>
-        ///  Get the selected property type
+        /// Get the selected property type
         /// </summary>
         public SaveValueType PropertyType
         {
@@ -67,7 +67,7 @@ namespace SwptSaveEditor.Dialogs
         private SaveValueType _propertyType = SaveValueType.String;
 
         /// <summary>
-        ///  Get whether the property is an array
+        /// Get whether the property is an array
         /// </summary>
         public bool PropertyIsArray
         {

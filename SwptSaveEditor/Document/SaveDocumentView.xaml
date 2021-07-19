@@ -87,6 +87,10 @@
                     <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="4" />
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="4" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="4" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
                 
                 <Button
@@ -176,6 +180,20 @@
 
                 <Button
                     Grid.Column="14"
+                    ToolTip="Rename Property (F2)"
+                    ToolTipService.ShowOnDisabled="True"
+                    Command="{Binding RenamePropertyCommand}">
+                    <Image
+                        Stretch="None"
+                        Source="{x:Static root:Images+ToolbarIcons.Rename}"
+                        Style="{StaticResource ButtonContentStyle}" />
+                </Button>
+
+                <Separator
+                    Grid.Column="16" />
+
+                <Button
+                    Grid.Column="18"
                     ToolTip="Copy Property (Ctrl+C)"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding CopyPropertyCommand}">
@@ -186,7 +204,7 @@
                 </Button>
 
                 <Button
-                    Grid.Column="16"
+                    Grid.Column="20"
                     ToolTip="Paste Property (Ctrl+V)"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding PastePropertyCommand}">
@@ -197,10 +215,10 @@
                 </Button>
 
                 <Separator
-                    Grid.Column="18" />
+                    Grid.Column="22" />
 
                 <Button
-                    Grid.Column="20"
+                    Grid.Column="24"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding MovePropertyUpCommand}">
                     <Button.Style>
@@ -227,7 +245,7 @@
                 </Button>
 
                 <Button
-                    Grid.Column="22"
+                    Grid.Column="26"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding MovePropertyDownCommand}">
                     <Button.Style>
@@ -254,10 +272,10 @@
                 </Button>
 
                 <Separator
-                    Grid.Column="24" />
+                    Grid.Column="28" />
 
                 <Button
-                    Grid.Column="26"
+                    Grid.Column="30"
                     ToolTip="Add Property (Ins)"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding AddPropertyCommand}">
@@ -268,7 +286,7 @@
                 </Button>
 
                 <Button
-                    Grid.Column="28"
+                    Grid.Column="32"
                     ToolTip="Remove Property (Del)"
                     ToolTipService.ShowOnDisabled="True"
                     Command="{Binding RemovePropertyCommand}">

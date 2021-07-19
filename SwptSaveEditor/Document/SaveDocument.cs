@@ -44,6 +44,7 @@ namespace SwptSaveEditor.Document
         private readonly DelegateCommand mReloadCommand;
 
         private readonly DelegateCommand mClearFilterCommand;
+        private readonly DelegateCommand mRenamePropertyCommand;
         private readonly DelegateCommand mCopyPropertyCommand;
         private readonly DelegateCommand mPastePropertyCommand;
         private readonly DelegateCommand mMovePropertyUpCommand;
@@ -62,6 +63,7 @@ namespace SwptSaveEditor.Document
             {
                 if (Set(ref _selectedPropertyIndex, value))
                 {
+                    mRenamePropertyCommand.RaiseCanExecuteChanged();
                     mCopyPropertyCommand.RaiseCanExecuteChanged();
                     mMovePropertyDownCommand.RaiseCanExecuteChanged();
                     mMovePropertyUpCommand.RaiseCanExecuteChanged();
@@ -142,6 +144,8 @@ namespace SwptSaveEditor.Document
 
         public ICommand ClearFilterCommand => mClearFilterCommand;
 
+        public ICommand RenamePropertyCommand => mRenamePropertyCommand;
+
         public ICommand CopyPropertyCommand => mCopyPropertyCommand;
 
         public ICommand PastePropertyCommand => mPastePropertyCommand;
@@ -165,6 +169,7 @@ namespace SwptSaveEditor.Document
             mReloadCommand = new DelegateCommand(Reload);
 
             mClearFilterCommand = new DelegateCommand(ClearFilter, () => !string.IsNullOrEmpty(PropertyFilter));
+            mRenamePropertyCommand = new DelegateCommand(RenameProperty, () => SelectedPropertyIndex >= 0);
             mCopyPropertyCommand = new DelegateCommand(CopyProperty, () => SelectedPropertyIndex >= 0);
             mPastePropertyCommand = new DelegateCommand(PasteProperty);
             mMovePropertyDownCommand = new DelegateCommand(MovePropertyDown, CanMovePropertyDown);
@@ -231,12 +236,25 @@ namespace SwptSaveEditor.Document
             PropertyFilter = string.Empty;
         }
 
+        private void RenameProperty()
+        {
+            SaveProperty property = GetSelectedProperty();
+            string oldName = property.Name;
+
+            RenamePropertyDialog dialog = new RenamePropertyDialog(oldName);
+            if (dialog.ShowDialog(Application.Current.MainWindow) == true)
+            {
+                DelegateUndoUnit unit = DelegateUndoUnit.CreateAndExecute(
+                    () => property.Name = dialog.PropertyName,
+                    () => property.Name = oldName);
+
+                mUndoService.PushUndoUnit(unit);
+            }
+        }
+
         private void CopyProperty()
         {
-            ICollectionView view = CollectionViewSource.GetDefaultView(mFile.Properties);
-            view.MoveCurrentToPosition(SelectedPropertyIndex);
-
-            SaveProperty property = (SaveProperty)view.CurrentItem;
+            SaveProperty property = GetSelectedProperty();
 
             using (MemoryStream stream = new MemoryStream())
             using (BinaryWriter writer = new BinaryWriter(stream))
@@ -361,6 +379,13 @@ namespace SwptSaveEditor.Document
                 });
             
             mUndoService.PushUndoUnit(unit);
+        }
+
+        private SaveProperty GetSelectedProperty()
+        {
+            ICollectionView view = CollectionViewSource.GetDefaultView(mFile.Properties);
+            view.MoveCurrentToPosition(SelectedPropertyIndex);
+            return (SaveProperty)view.CurrentItem;
         }
     }
 }

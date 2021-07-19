@@ -29,7 +29,12 @@ namespace SwptSaveLib
         private const byte ArrayStart = 0x53;
         private const byte TypePrefix = 0xff;
 
-        public string Name { get; }
+        public string Name
+        {
+            get => _name;
+            set => Set(ref _name, value);
+        }
+        private string _name;
 
         public SaveValue Value
         {

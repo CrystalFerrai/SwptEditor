@@ -60,6 +60,7 @@ namespace SwptSaveEditor
             public static ImageSource Redo { get; private set; }
             public static ImageSource Refresh { get; private set; }
             public static ImageSource Remove { get; private set; }
+            public static ImageSource Rename { get; private set; }
             public static ImageSource Save { get; private set; }
             public static ImageSource SaveAll { get; private set; }
             public static ImageSource Undo { get; private set; }

@@ -3,7 +3,7 @@
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">x64</Platform>
     <ProjectGuid>{2EDEAB00-3FBE-4B2B-8B08-4E463D3C7170}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
@@ -15,25 +15,6 @@
     <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -103,6 +84,10 @@
     <Compile Include="Dialogs\NewPropertyDialogView.xaml.cs">
       <DependentUpon>NewPropertyDialogView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Dialogs\RenamePropertyDialog.cs" />
+    <Compile Include="Dialogs\RenamePropertyDialogView.xaml.cs">
+      <DependentUpon>RenamePropertyDialogView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Document\DocumentService.cs" />
     <Compile Include="Document\SaveDocument.cs" />
     <Compile Include="Document\SaveDocumentView.xaml.cs">
@@ -142,6 +127,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Dialogs\RenamePropertyDialogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Document\SaveDocumentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -174,48 +163,27 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\ToolbarIcons\OpenFolder.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ToolbarIcons\Redo.png" />
-    <Resource Include="Images\ToolbarIcons\Undo.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ToolbarIcons\Refresh.png" />
-    <Resource Include="Images\ToolbarIcons\Save.png" />
-    <Resource Include="Images\ToolbarIcons\SaveAll.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ToolbarIcons\AddFolder.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ToolbarIcons\Close.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\Markers\Crosshair.png" />
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="Images\Markers\ArrowDown.png" />
     <Resource Include="Images\Markers\ArrowLeft.png" />
     <Resource Include="Images\Markers\ArrowRight.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\Markers\ArrowDown.png" />
     <Resource Include="Images\Markers\ArrowUp.png" />
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="Images\Markers\Crosshair.png" />
     <Resource Include="Images\ToolbarIcons\Add.png" />
-    <Resource Include="Images\ToolbarIcons\Remove.png" />
-  </ItemGroup>
-  <ItemGroup>
+    <Resource Include="Images\ToolbarIcons\AddFolder.png" />
+    <Resource Include="Images\ToolbarIcons\Close.png" />
+    <Resource Include="Images\ToolbarIcons\CloseAlt.png" />
+    <Resource Include="Images\ToolbarIcons\Copy.png" />
     <Resource Include="Images\ToolbarIcons\MoveDown.png" />
     <Resource Include="Images\ToolbarIcons\MoveUp.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ToolbarIcons\CloseAlt.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Images\ToolbarIcons\Copy.png" />
+    <Resource Include="Images\ToolbarIcons\OpenFolder.png" />
     <Resource Include="Images\ToolbarIcons\Paste.png" />
+    <Resource Include="Images\ToolbarIcons\Redo.png" />
+    <Resource Include="Images\ToolbarIcons\Refresh.png" />
+    <Resource Include="Images\ToolbarIcons\Remove.png" />
+    <Resource Include="Images\ToolbarIcons\Rename.png" />
+    <Resource Include="Images\ToolbarIcons\Save.png" />
+    <Resource Include="Images\ToolbarIcons\SaveAll.png" />
+    <Resource Include="Images\ToolbarIcons\Undo.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

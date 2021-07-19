@@ -17,6 +17,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 using System.Windows.Input;
+using System.Windows.Threading;
 
 namespace SwptSaveEditor.Behaviors
 {
@@ -30,7 +31,8 @@ namespace SwptSaveEditor.Behaviors
         // Commit changes to the text in the text box if the enter key is pressed while it has keyboard focus.
         // ----------------------------------------------------------------------------------------------------------------------------------------------
 
-        public static readonly DependencyProperty CommitOnEnterProperty = DependencyProperty.RegisterAttached("CommitOnEnter", typeof(bool), typeof(TextBoxBehavior), new FrameworkPropertyMetadata(false, (d, e) => OnCommitOnEnterChanged(d as TextBoxBase, (bool)e.OldValue, (bool)e.NewValue)));
+        public static readonly DependencyProperty CommitOnEnterProperty = DependencyProperty.RegisterAttached("CommitOnEnter", typeof(bool), typeof(TextBoxBehavior),
+            new FrameworkPropertyMetadata(false, (d, e) => OnCommitOnEnterChanged(d as TextBoxBase, (bool)e.OldValue, (bool)e.NewValue)));
 
         [AttachedPropertyBrowsableForType(typeof(TextBoxBase))]
         public static bool GetCommitOnEnter(TextBoxBase textBox)
@@ -51,17 +53,17 @@ namespace SwptSaveEditor.Behaviors
 
             if (oldValue)
             {
-                textBox.KeyDown -= TextBox_KeyDown;
-                textBox.KeyUp -= TextBox_KeyUp;
+                textBox.KeyDown -= CommitOnEnter_KeyDown;
+                textBox.KeyUp -= CommitOnEnter_KeyUp;
             }
             if (newValue)
             {
-                textBox.KeyDown += TextBox_KeyDown;
-                textBox.KeyUp += TextBox_KeyUp;
+                textBox.KeyDown += CommitOnEnter_KeyDown;
+                textBox.KeyUp += CommitOnEnter_KeyUp;
             }
         }
 
-        private static void TextBox_KeyDown(object sender, KeyEventArgs e)
+        private static void CommitOnEnter_KeyDown(object sender, KeyEventArgs e)
         {
             TextBoxBase textBox = sender as TextBoxBase;
             if (textBox == null) return;
@@ -72,7 +74,7 @@ namespace SwptSaveEditor.Behaviors
             }
         }
 
-        private static void TextBox_KeyUp(object sender, KeyEventArgs e)
+        private static void CommitOnEnter_KeyUp(object sender, KeyEventArgs e)
         {
             TextBoxBase textBox = sender as TextBoxBase;
             if (textBox == null) return;
@@ -82,6 +84,51 @@ namespace SwptSaveEditor.Behaviors
                 textBox.GetBindingExpression(TextBox.TextProperty)?.UpdateSource();
                 e.Handled = true;
             }
+        }
+
+        // ----------------------------------------------------------------------------------------------------------------------------------------------
+        // SelectAllOnFocus
+        // Select all text n the text box when it receives focus
+        // ----------------------------------------------------------------------------------------------------------------------------------------------
+
+        public static readonly DependencyProperty SelectAllOnFocusProperty = DependencyProperty.RegisterAttached("SelectAllOnFocus", typeof(bool), typeof(TextBoxBehavior),
+            new FrameworkPropertyMetadata(false, (d, e) => OnSelectAllOnFocusChanged(d as TextBoxBase, (bool)e.OldValue, (bool)e.NewValue)));
+
+        [AttachedPropertyBrowsableForType(typeof(TextBoxBase))]
+        public static bool GetSelectAllOnFocus(TextBoxBase textBox)
+        {
+            if (textBox == null) throw new ArgumentNullException(nameof(textBox));
+            return (bool)textBox.GetValue(SelectAllOnFocusProperty);
+        }
+
+        public static void SetSelectAllOnFocus(TextBoxBase textBox, bool value)
+        {
+            if (textBox == null) throw new ArgumentNullException(nameof(textBox));
+            textBox.SetValue(SelectAllOnFocusProperty, value);
+        }
+
+        private static void OnSelectAllOnFocusChanged(TextBoxBase textBox, bool oldValue, bool newValue)
+        {
+            if (textBox == null) return;
+
+            if (oldValue)
+            {
+                textBox.GotKeyboardFocus -= SelectAllOnFocus_GotKeyboardFocus;
+            }
+            if (newValue)
+            {
+                textBox.GotKeyboardFocus += SelectAllOnFocus_GotKeyboardFocus;
+            }
+        }
+
+        private static void SelectAllOnFocus_GotKeyboardFocus(object sender, KeyboardFocusChangedEventArgs e)
+        {
+            TextBoxBase textBox = sender as TextBoxBase;
+            if (textBox == null) return;
+
+            // SelectAll fails if the control has just been loaded. Putting the call at the end of the current
+            // dispatcher queue seems to fix that issue.
+            Dispatcher.CurrentDispatcher.BeginInvoke(new Action(textBox.SelectAll));
         }
     }
 }
