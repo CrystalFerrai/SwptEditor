@@ -126,7 +126,7 @@ namespace SwptSaveEditor.Undo
         public void SetSavePoint()
         {
             mSavePointUndoIndex = mUndoStack.Count;
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(IsSavePoint)));
+            FireStateChanged();
         }
 
         private void Dispose(bool disposing)
