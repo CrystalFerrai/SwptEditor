@@ -62,11 +62,11 @@
                 </Grid.ColumnDefinitions>
                 <Button
                     IsDefault="True"
-                    Content="Replace"
+                    Content="_Replace"
                     Click="ReplaceButton_Click" />
                 <Button
                     Grid.Column="2"
-                    Content="Add New"
+                    Content="_Add New"
                     Click="AddNewButton_Click" />
                 <Button
                     Grid.Column="4"
