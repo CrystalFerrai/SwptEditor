@@ -22,6 +22,8 @@ namespace SwptSaveEditor.Dialogs
     /// </summary>
     internal class RenamePropertyDialog : ViewModelBase
     {
+        private readonly string mOldName;
+
         /// <summary>
         /// Get the property name
         /// </summary>
@@ -38,10 +40,11 @@ namespace SwptSaveEditor.Dialogs
         }
         private string _propertyName;
 
-        public bool IsValid => !string.IsNullOrWhiteSpace(PropertyName);
+        public bool IsValid => !string.IsNullOrWhiteSpace(PropertyName) && !PropertyName.Equals(mOldName, System.StringComparison.Ordinal);
 
         public RenamePropertyDialog(string propertyName)
         {
+            mOldName = propertyName;
             PropertyName = propertyName;
         }
 
