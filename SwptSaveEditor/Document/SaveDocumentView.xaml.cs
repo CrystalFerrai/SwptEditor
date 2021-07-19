@@ -46,6 +46,8 @@ namespace SwptSaveEditor.Document
             // These are also handled in MainWindow.xaml.cs for the case where the grid does not have focus.
 
             DataGrid grid = (DataGrid)sender;
+            if (grid.SelectedIndex < 0) return;
+
             DataGridRow row = (DataGridRow)grid.ItemContainerGenerator.ContainerFromIndex(grid.SelectedIndex);
             if (!row.IsEditing)
             {
