@@ -41,16 +41,32 @@ namespace SwptSaveEditor.Document
         {
             if (e.OldValue != null)
             {
-                WeakEventManager<IUndoService, EventArgs>.RemoveHandler(((SaveDocument)e.OldValue).UndoService, nameof(IUndoService.StateChanged), UndoService_StateChanged);
+                WeakEventManager<SaveDocument, EventArgs>.RemoveHandler((SaveDocument)e.OldValue, nameof(SaveDocument.ResetFocus), ViewModel_ResetFocus);
             }
 
             ViewModel.FilterElement = FilterTextBox;
-            WeakEventManager<IUndoService, EventArgs>.AddHandler(ViewModel.UndoService, nameof(IUndoService.StateChanged), UndoService_StateChanged);
+            WeakEventManager<SaveDocument, EventArgs>.AddHandler(ViewModel, nameof(SaveDocument.ResetFocus), ViewModel_ResetFocus);
         }
 
-        private void UndoService_StateChanged(object sender, EventArgs e)
+        private void ViewModel_ResetFocus(object sender, EventArgs e)
         {
-            PropertyGrid.Focus();
+            if (PropertyGrid.SelectedIndex >= 0)
+            {
+                Dispatcher.BeginInvoke(new Action(() =>
+                {
+                    PropertyGrid.UpdateLayout();
+                    PropertyGrid.ScrollIntoView(PropertyGrid.SelectedItem);
+                    DataGridRow row = (DataGridRow)PropertyGrid.ItemContainerGenerator.ContainerFromIndex(PropertyGrid.SelectedIndex);
+                    if (row != null)
+                    {
+                        DataGridCell cell = PropertyGrid.Columns[1].GetCellContent(row)?.Parent as DataGridCell;
+                        if (cell != null)
+                        {
+                            Keyboard.Focus(cell);
+                        }
+                    }
+                }));
+            }
         }
 
         private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)

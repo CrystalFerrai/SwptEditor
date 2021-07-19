@@ -158,6 +158,8 @@ namespace SwptSaveEditor.Document
 
         public ICommand RemovePropertyCommand => mRemovePropertyCommand;
 
+        public event EventHandler ResetFocus;
+
         public SaveDocument(IServiceProvider services, SaveFile file)
         {
             mFile = file;
@@ -185,6 +187,7 @@ namespace SwptSaveEditor.Document
             mUndoCommand.RaiseCanExecuteChanged();
             mRedoCommand.RaiseCanExecuteChanged();
             mSaveCommand.RaiseCanExecuteChanged();
+            ResetFocus?.Invoke(this, EventArgs.Empty);
         }
 
         public void RecordValueEdit(SaveValue value, object oldData)
@@ -213,6 +216,7 @@ namespace SwptSaveEditor.Document
                     case MessageBoxResult.Yes:
                         break;
                     case MessageBoxResult.No:
+                        ResetFocus?.Invoke(this, EventArgs.Empty);
                         return;
                 }
             }
@@ -224,6 +228,7 @@ namespace SwptSaveEditor.Document
                     case MessageBoxResult.Yes:
                         break;
                     case MessageBoxResult.No:
+                        ResetFocus?.Invoke(this, EventArgs.Empty);
                         return;
                 }
             }
@@ -274,6 +279,8 @@ namespace SwptSaveEditor.Document
                     }
                 }
             }
+
+            ResetFocus.Invoke(this, EventArgs.Empty);
         }
 
         private void PasteProperty()
@@ -306,6 +313,7 @@ namespace SwptSaveEditor.Document
                                 switch (dialog.ShowDialog(Application.Current.MainWindow))
                                 {
                                     case PastePropertyDialogResult.Cancel:
+                                        ResetFocus?.Invoke(this, EventArgs.Empty);
                                         return;
                                     case PastePropertyDialogResult.Replace:
                                         {
@@ -338,7 +346,12 @@ namespace SwptSaveEditor.Document
                                 int viewIndex = IndexOfViewProperty(property);
                                 if (viewIndex >= 0) SelectedPropertyIndex = viewIndex;
                             },
-                            () => mFile.RemoveProperty(index)));
+                            () =>
+                            {
+                                int viewIndex = IndexOfViewProperty(property);
+                                mFile.RemoveProperty(index);
+                                if (viewIndex >= 0) SelectedPropertyIndex = Math.Max(0, viewIndex - 1);
+                            }));
 
                         mUndoService.PushUndoUnit(group);
                     }
@@ -408,6 +421,10 @@ namespace SwptSaveEditor.Document
                     });
 
                 mUndoService.PushUndoUnit(unit);
+            }
+            else
+            {
+                ResetFocus?.Invoke(this, EventArgs.Empty);
             }
         }
 
