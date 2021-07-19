@@ -44,8 +44,11 @@ namespace SwptSaveEditor.Document
                 WeakEventManager<SaveDocument, EventArgs>.RemoveHandler((SaveDocument)e.OldValue, nameof(SaveDocument.ResetFocus), ViewModel_ResetFocus);
             }
 
-            ViewModel.FilterElement = FilterTextBox;
-            WeakEventManager<SaveDocument, EventArgs>.AddHandler(ViewModel, nameof(SaveDocument.ResetFocus), ViewModel_ResetFocus);
+            if (ViewModel != null)
+            {
+                ViewModel.FilterElement = FilterTextBox;
+                WeakEventManager<SaveDocument, EventArgs>.AddHandler(ViewModel, nameof(SaveDocument.ResetFocus), ViewModel_ResetFocus);
+            }
         }
 
         private void ViewModel_ResetFocus(object sender, EventArgs e)
