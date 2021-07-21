@@ -15,6 +15,7 @@
 using SwptSaveEditor.Utils;
 using System;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace SwptSaveEditor.Input
 {
@@ -23,8 +24,8 @@ namespace SwptSaveEditor.Input
     /// </summary>
     internal class DelegateInputAction : InputAction
     {
-        public DelegateInputAction(string name, Key key, ModifierKeys modifiers, Action execute, Func<bool> canExecute = null)
-            : base(name, new DelegateCommand(execute, canExecute), key, modifiers)
+        public DelegateInputAction(string name, Key key, ModifierKeys modifiers, ImageSource icon, Action execute, Func<bool> canExecute = null)
+            : base(name, new DelegateCommand(execute, canExecute), key, modifiers, icon)
         {
         }
 

@@ -1,11 +1,11 @@
 ﻿<!-- Copyright 2021 Crystal Ferrai
-    
+
      Licensed under the Apache License, Version 2.0 (the "License");
      you may not use this file except in compliance with the License.
      You may obtain a copy of the License at
-    
+
         http://www.apache.org/licenses/LICENSE-2.0
-    
+
      Unless required by applicable law or agreed to in writing, software
      distributed under the License is distributed on an "AS IS" BASIS,
      WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -27,13 +27,13 @@
     mc:Ignorable="d"
     FocusManager.FocusedElement="{Binding ElementName=PropertyGrid}"
     d:DataContext="{d:DesignInstance Type={x:Type local:SaveDocument}, IsDesignTimeCreatable=True}">
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
-        
+
         <!-- Tab toolbar -->
         <Border
             Background="#fff8f8f8"
@@ -98,52 +98,28 @@
                     <ColumnDefinition Width="4" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                
-                <Button
-                    ToolTip="{Binding UndoAction.ToolTip}"
-                    ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding UndoAction.Command}">
-                    <Image
-                        Stretch="None"
-                        Source="{x:Static root:Images+ToolbarIcons.Undo}"
-                        Style="{StaticResource ButtonContentStyle}" />
-                </Button>
-                
-                <Button
+
+                <ContentPresenter
+                    Content="{Binding UndoAction}"
+                    Style="{StaticResource ToolbarButtonStyle}" />
+
+                <ContentPresenter
                     Grid.Column="2"
-                    ToolTip="{Binding RedoAction.ToolTip}"
-                    ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding RedoAction.Command}">
-                    <Image
-                        Stretch="None"
-                        Source="{x:Static root:Images+ToolbarIcons.Redo}"
-                        Style="{StaticResource ButtonContentStyle}" />
-                </Button>
+                    Content="{Binding RedoAction}"
+                    Style="{StaticResource ToolbarButtonStyle}" />
 
                 <Separator
                     Grid.Column="4" />
 
-                <Button
+                <ContentPresenter
                     Grid.Column="6"
-                    ToolTip="{Binding SaveAction.ToolTip}"
-                    ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding SaveAction.Command}">
-                    <Image
-                        Stretch="None"
-                        Source="{x:Static root:Images+ToolbarIcons.Save}"
-                        Style="{StaticResource ButtonContentStyle}" />
-                </Button>
+                    Content="{Binding SaveAction}"
+                    Style="{StaticResource ToolbarButtonStyle}" />
 
-                <Button
+                <ContentPresenter
                     Grid.Column="8"
-                    ToolTip="{Binding ReloadAction.ToolTip}"
-                    ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding ReloadAction.Command}">
-                    <Image
-                        Stretch="None"
-                        Source="{x:Static root:Images+ToolbarIcons.Refresh}"
-                        Style="{StaticResource ButtonContentStyle}" />
-                </Button>
+                    Content="{Binding ReloadAction}"
+                    Style="{StaticResource ToolbarButtonStyle}" />
 
                 <!-- * -->
 
@@ -167,144 +143,97 @@
                         ToolTip="{Binding FilterAction.ToolTip}"
                         Text="{Binding PropertyFilter, UpdateSourceTrigger=PropertyChanged}" />
 
-                    <Button
+                    <ContentPresenter
                         Grid.Column="4"
-                        ToolTip="{Binding ClearFilterAction.ToolTip}"
-                        ToolTipService.ShowOnDisabled="True"
-                        Command="{Binding ClearFilterAction.Command}"
-                        Style="{StaticResource BorderlessButton}">
-                        <Image
-                            Stretch="None"
-                            Source="{x:Static root:Images+ToolbarIcons.CloseAlt}"
-                            Style="{StaticResource ButtonContentStyle}" />
-                    </Button>
+                        Content="{Binding ClearFilterAction}"
+                        Style="{StaticResource ToolbarButtonStyle}" />
 
                 </Grid>
 
                 <Separator
                     Grid.Column="12" />
 
-                <Button
+                <ContentPresenter
                     Grid.Column="14"
-                    ToolTip="{Binding RenamePropertyAction.ToolTip}"
-                    ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding RenamePropertyAction.Command}">
-                    <Image
-                        Stretch="None"
-                        Source="{x:Static root:Images+ToolbarIcons.Rename}"
-                        Style="{StaticResource ButtonContentStyle}" />
-                </Button>
+                    Content="{Binding RenamePropertyAction}"
+                    Style="{StaticResource ToolbarButtonStyle}" />
 
                 <Separator
                     Grid.Column="16" />
 
-                <Button
+                <ContentPresenter
                     Grid.Column="18"
-                    ToolTip="{Binding CopyPropertyAction.ToolTip}"
-                    ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding CopyPropertyAction.Command}">
-                    <Image
-                        Stretch="None"
-                        Source="{x:Static root:Images+ToolbarIcons.Copy}"
-                        Style="{StaticResource ButtonContentStyle}" />
-                </Button>
+                    Content="{Binding CopyPropertyAction}"
+                    Style="{StaticResource ToolbarButtonStyle}" />
 
-                <Button
+                <ContentPresenter
                     Grid.Column="20"
-                    ToolTip="{Binding PastePropertyAction.ToolTip}"
-                    ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding PastePropertyAction.Command}">
-                    <Image
-                        Stretch="None"
-                        Source="{x:Static root:Images+ToolbarIcons.Paste}"
-                        Style="{StaticResource ButtonContentStyle}" />
-                </Button>
+                    Content="{Binding PastePropertyAction}"
+                    Style="{StaticResource ToolbarButtonStyle}" />
 
                 <Separator
                     Grid.Column="22" />
 
-                <Button
+                <ContentPresenter
                     Grid.Column="24"
-                    ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding MovePropertyUpAction.Command}">
-                    <Button.Style>
+                    Content="{Binding MovePropertyUpAction}">
+                    <ContentPresenter.Style>
                         <Style
-                            TargetType="{x:Type Button}">
-                            <Setter Property="ToolTip" Value="{Binding MovePropertyUpAction.ToolTip}" />
+                            TargetType="{x:Type ContentPresenter}"
+                            BasedOn="{StaticResource ToolbarButtonStyle}">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding CanMoveProperties}" Value="False">
-                                    <Setter Property="ToolBar.ToolTip">
+                                <DataTrigger Binding="{Binding DataContext.CanMoveProperties, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" Value="False">
+                                    <Setter Property="ToolTip">
                                         <Setter.Value>
                                             <TextBlock>
-                                                <Run Text="{Binding MovePropertyUpAction.ToolTip}" /><LineBreak /><Run FontStyle="Italic" Text="Properties must be unsorted and unfiltered" />
+                                                <Run Text="{Binding ToolTip, Mode=OneWay}" /><LineBreak /><Run FontStyle="Italic" Text="Properties must be unsorted and unfiltered" />
                                             </TextBlock>
                                         </Setter.Value>
                                     </Setter>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Button.Style>
-                    <Image
-                        Stretch="None"
-                        Source="{x:Static root:Images+ToolbarIcons.MoveUp}"
-                        Style="{StaticResource ButtonContentStyle}" />
-                </Button>
+                    </ContentPresenter.Style>
+                </ContentPresenter>
 
-                <Button
+                <ContentPresenter
                     Grid.Column="26"
-                    ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding MovePropertyDownAction.Command}">
-                    <Button.Style>
+                    Content="{Binding MovePropertyDownAction}">
+                    <ContentPresenter.Style>
                         <Style
-                            TargetType="{x:Type Button}">
-                            <Setter Property="ToolTip" Value="{Binding MovePropertyDownAction.ToolTip}" />
+                            TargetType="{x:Type ContentPresenter}"
+                            BasedOn="{StaticResource ToolbarButtonStyle}">
                             <Style.Triggers>
-                                <DataTrigger Binding="{Binding CanMoveProperties}" Value="False">
-                                    <Setter Property="ToolBar.ToolTip">
+                                <DataTrigger Binding="{Binding DataContext.CanMoveProperties, RelativeSource={RelativeSource AncestorType={x:Type Grid}}}" Value="False">
+                                    <Setter Property="ToolTip">
                                         <Setter.Value>
                                             <TextBlock>
-                                                <Run Text="{Binding MovePropertyDownAction.ToolTip}" /><LineBreak /><Run FontStyle="Italic" Text="Properties must be unsorted and unfiltered" />
+                                                <Run Text="{Binding ToolTip, Mode=OneWay}" /><LineBreak /><Run FontStyle="Italic" Text="Properties must be unsorted and unfiltered" />
                                             </TextBlock>
                                         </Setter.Value>
                                     </Setter>
                                 </DataTrigger>
                             </Style.Triggers>
                         </Style>
-                    </Button.Style>
-                    <Image
-                        Stretch="None"
-                        Source="{x:Static root:Images+ToolbarIcons.MoveDown}"
-                        Style="{StaticResource ButtonContentStyle}" />
-                </Button>
+                    </ContentPresenter.Style>
+                </ContentPresenter>
 
                 <Separator
                     Grid.Column="28" />
 
-                <Button
+                <ContentPresenter
                     Grid.Column="30"
-                    ToolTip="{Binding AddPropertyAction.ToolTip}"
-                    ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding AddPropertyAction.Command}">
-                    <Image
-                        Stretch="None"
-                        Source="{x:Static root:Images+ToolbarIcons.Add}"
-                        Style="{StaticResource ButtonContentStyle}" />
-                </Button>
+                    Content="{Binding AddPropertyAction}"
+                    Style="{StaticResource ToolbarButtonStyle}" />
 
-                <Button
+                <ContentPresenter
                     Grid.Column="32"
-                    ToolTip="{Binding RemovePropertyAction.ToolTip}"
-                    ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding RemovePropertyAction.Command}">
-                    <Image
-                        Stretch="None"
-                        Source="{x:Static root:Images+ToolbarIcons.Remove}"
-                        Style="{StaticResource ButtonContentStyle}" />
-                </Button>
+                    Content="{Binding RemovePropertyAction}"
+                    Style="{StaticResource ToolbarButtonStyle}" />
 
             </Grid>
         </Border>
-        
+
         <!-- Tab data -->
         <DataGrid
             x:Name="PropertyGrid"
@@ -340,6 +269,39 @@
                     </Style.Triggers>
                 </Style>
             </DataGrid.Resources>
+            <DataGrid.ContextMenu>
+                <ContextMenu
+                    ItemsSource="{Binding ContextMenuItems}">
+                    <ContextMenu.Resources>
+                        <Image
+                            x:Key="MenuIcon"
+                            x:Shared="False"
+                            Stretch="None"
+                            Source="{Binding Icon}"
+                            Style="{StaticResource ImageEnableStyle}" />
+                    </ContextMenu.Resources>
+                    <ContextMenu.ItemContainerStyle>
+                        <Style
+                            TargetType="{x:Type MenuItem}">
+                            <Setter Property="Command" Value="{Binding Command}" />
+                            <Setter Property="Icon" Value="{StaticResource MenuIcon}" />
+                            <Setter Property="Header" Value="{Binding Name}" />
+                            <Setter Property="InputGestureText" Value="{Binding Shortcut}" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate>
+                                                <Separator />
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </ContextMenu.ItemContainerStyle>
+                </ContextMenu>
+            </DataGrid.ContextMenu>
             <DataGrid.Columns>
                 <DataGridTextColumn
                     Header="Name"
@@ -347,7 +309,7 @@
                     IsReadOnly="True"
                     CellStyle="{StaticResource ReadOnlyColumnStyle}"
                     Binding="{Binding Name}"
-                    SortDirection="{Binding Data.NameSortDirection, Source={StaticResource GridBindingProxy}, Mode=TwoWay}" />
+                    SortDirection="{Binding Context.NameSortDirection, Source={StaticResource GridBindingProxy}, Mode=TwoWay}" />
                 <c:BindingDataGridTemplateColumn
                     Header="Value"
                     Width="*"
@@ -362,7 +324,7 @@
                     IsReadOnly="True"
                     CellStyle="{StaticResource ReadOnlyColumnStyle}"
                     Binding="{Binding Value.DisplayType}"
-                    SortDirection="{Binding Data.TypeSortDirection, Source={StaticResource GridBindingProxy}, Mode=TwoWay}" />
+                    SortDirection="{Binding Context.TypeSortDirection, Source={StaticResource GridBindingProxy}, Mode=TwoWay}" />
             </DataGrid.Columns>
         </DataGrid>
     </Grid>

@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace SwptSaveEditor.Input
 {
@@ -23,7 +24,11 @@ namespace SwptSaveEditor.Input
     {
         public string Name { get; }
 
+        public string Shortcut { get; }
+
         public string ToolTip { get; }
+
+        public ImageSource Icon { get; }
 
         public Key Key { get; }
 
@@ -31,13 +36,15 @@ namespace SwptSaveEditor.Input
 
         public ICommand Command { get; }
 
-        public InputAction(string name, ICommand command, Key key, ModifierKeys modifiers)
+        public InputAction(string name, ICommand command, Key key, ModifierKeys modifiers, ImageSource icon)
         {
             Name = name;
             Command = command;
             Key = key;
             Modifiers = modifiers;
-            ToolTip = $"{Name}{GetKeyComboString(modifiers, key)}";
+            Icon = icon;
+            Shortcut = GetShortcutString(modifiers, key);
+            ToolTip = Name + (string.IsNullOrEmpty(Shortcut) ? string.Empty : $" ({Shortcut})");
         }
 
         public override bool Matches(object targetElement, InputEventArgs inputEventArgs)
@@ -48,7 +55,7 @@ namespace SwptSaveEditor.Input
             return args.KeyboardDevice.Modifiers == Modifiers && (args.Key == Key || args.SystemKey == Key);
         }
 
-        private static string GetKeyComboString(ModifierKeys modifiers, Key key)
+        private static string GetShortcutString(ModifierKeys modifiers, Key key)
         {
             KeyConverter kc = new KeyConverter();
             string keyName = kc.ConvertToString(key);
@@ -63,9 +70,9 @@ namespace SwptSaveEditor.Input
 
             if (string.IsNullOrEmpty(modName))
             {
-                return $" ({keyName})";
+                return keyName;
             }
-            return $" ({modName}+{keyName})";
+            return $"{modName}+{keyName}";
         }
     }
 }

@@ -154,11 +154,11 @@ namespace SwptSaveEditor
             mSettings.SettingsLoaded += Settings_SettingsLoaded;
             mSettingsService.RegisterProvider(mSettings);
 
-            mInputService.GlobalActions.Add(mOpenAction = new DelegateInputAction("Open Save Game Folder", Key.O, ModifierKeys.Control, OpenSaveGame));
-            mInputService.GlobalActions.Add(mCloseAction = new DelegateInputAction("Close All", Key.F4, ModifierKeys.Control, CloseAll, () => IsSaveOpen));
-            mInputService.GlobalActions.Add(mReloadAction = new DelegateInputAction("Reload All from Disk", Key.R, ModifierKeys.Control, ReloadFromDisk, () => IsSaveOpen));
-            mInputService.GlobalActions.Add(mSaveAllAction = new DelegateInputAction("Save All Changed Files", Key.S, ModifierKeys.Control | ModifierKeys.Shift, SaveAllChanges, AnyUnsavedChanges));
-            mInputService.GlobalActions.Add(mSaveAllAsAction = new DelegateInputAction("Save All Files to a New Location", Key.N, ModifierKeys.Control, SaveAllAs, () => IsSaveOpen));
+            mInputService.GlobalActions.Add(mOpenAction = new DelegateInputAction("Open Save Game Folder", Key.O, ModifierKeys.Control, Images.ToolbarIcons.OpenFolder, OpenSaveGame));
+            mInputService.GlobalActions.Add(mCloseAction = new DelegateInputAction("Close All", Key.F4, ModifierKeys.Control, Images.ToolbarIcons.Close, CloseAll, () => IsSaveOpen));
+            mInputService.GlobalActions.Add(mReloadAction = new DelegateInputAction("Reload All from Disk", Key.R, ModifierKeys.Control, Images.ToolbarIcons.Refresh, ReloadFromDisk, () => IsSaveOpen));
+            mInputService.GlobalActions.Add(mSaveAllAction = new DelegateInputAction("Save All Changed Files", Key.S, ModifierKeys.Control | ModifierKeys.Shift, Images.ToolbarIcons.SaveAll, SaveAllChanges, AnyUnsavedChanges));
+            mInputService.GlobalActions.Add(mSaveAllAsAction = new DelegateInputAction("Save All Files to a New Location", Key.N, ModifierKeys.Control, Images.ToolbarIcons.AddFolder, SaveAllAs, () => IsSaveOpen));
 
             mOpenRecentCommand = new DelegateCommand<string>((path) => LoadSaveGame(path));
         }

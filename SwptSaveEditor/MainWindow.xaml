@@ -58,16 +58,10 @@
                 </Grid.ColumnDefinitions>
                 
                 <!-- Open -->
-                <Button
-                    BorderThickness="1 1 0 1"
+                <ContentPresenter
                     Margin="0 0 -1 0"
-                    ToolTip="{Binding OpenAction.ToolTip}"
-                    ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding OpenAction.Command}">
-                    <Image
-                        Stretch="None"
-                        Source="{x:Static local:Images+ToolbarIcons.OpenFolder}" />
-                </Button>
+                    Content="{Binding OpenAction}"
+                    Style="{StaticResource ToolbarButtonStyle}" />
                 <ComboBox
                     Grid.Column="1"
                     IsEditable="False"
@@ -87,52 +81,28 @@
                 </ComboBox>
 
                 <!-- Close -->
-                <Button
+                <ContentPresenter
                     Grid.Column="3"
-                    ToolTip="{Binding CloseAction.ToolTip}"
-                    ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding CloseAction.Command}">
-                    <Image
-                        Stretch="None"
-                        Source="{x:Static local:Images+ToolbarIcons.Close}"
-                        Style="{StaticResource ButtonContentStyle}" />
-                </Button>
+                    Content="{Binding CloseAction}"
+                    Style="{StaticResource ToolbarButtonStyle}" />
 
                 <!-- Reload All -->
-                <Button
+                <ContentPresenter
                     Grid.Column="5"
-                    ToolTip="{Binding ReloadAction.ToolTip}"
-                    ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding ReloadAction.Command}">
-                    <Image
-                        Stretch="None"
-                        Source="{x:Static local:Images+ToolbarIcons.Refresh}"
-                        Style="{StaticResource ButtonContentStyle}" />
-                </Button>
+                    Content="{Binding ReloadAction}"
+                    Style="{StaticResource ToolbarButtonStyle}" />
                 
                 <!-- Save All -->
-                <Button
+                <ContentPresenter
                     Grid.Column="7"
-                    ToolTip="{Binding SaveAllAction.ToolTip}"
-                    ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding SaveAllAction.Command}">
-                    <Image
-                        Stretch="None"
-                        Source="{x:Static local:Images+ToolbarIcons.SaveAll}"
-                        Style="{StaticResource ButtonContentStyle}" />
-                </Button>
+                    Content="{Binding SaveAllAction}"
+                    Style="{StaticResource ToolbarButtonStyle}" />
 
                 <!-- Save All As -->
-                <Button
+                <ContentPresenter
                     Grid.Column="9"
-                    ToolTip="{Binding SaveAllAsAction.ToolTip}"
-                    ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding SaveAllAsAction.Command}">
-                    <Image
-                        Stretch="None"
-                        Source="{x:Static local:Images+ToolbarIcons.AddFolder}"
-                        Style="{StaticResource ButtonContentStyle}" />
-                </Button>
+                    Content="{Binding SaveAllAsAction}"
+                    Style="{StaticResource ToolbarButtonStyle}" />
 
             </Grid>
         </Border>
@@ -198,7 +168,7 @@
                 </TextBlock>
                 <TextBlock
                     Grid.Row="2">
-                    <Run Text="Nothing is open. Use the toolbar above or " /><Hyperlink Command="{Binding OpenCommand}"><Run Text="click here" /></Hyperlink><Run Text=" to open something." />
+                    <Run Text="Nothing is open. Use the toolbar above or " /><Hyperlink Command="{Binding OpenAction.Command}"><Run Text="click here" /></Hyperlink><Run Text=" to open something." />
                 </TextBlock>
                 <StackPanel
                     Grid.Row="4"

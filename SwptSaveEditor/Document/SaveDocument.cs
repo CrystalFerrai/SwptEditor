@@ -22,6 +22,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Windows;
@@ -60,6 +61,8 @@ namespace SwptSaveEditor.Document
         public string Name => mFile.Name;
 
         public IReadOnlyList<SaveProperty> Properties => mFile.Properties;
+
+        public IEnumerable<InputAction> ContextMenuItems { get; }
 
         public int SelectedPropertyIndex
         {
@@ -183,21 +186,28 @@ namespace SwptSaveEditor.Document
             mUndoService = new UndoService();
 
             mInputActions = new List<InputAction>();
+            List<InputAction> contextMenuItems = new List<InputAction>();
+            ContextMenuItems = contextMenuItems;
 
-            mInputActions.Add(mUndoAction = new DelegateInputAction("Undo", Key.Z, ModifierKeys.Control, mUndoService.Undo, () => mUndoService.CanUndo));
-            mInputActions.Add(mRedoAction = new DelegateInputAction("Redo", Key.Y, ModifierKeys.Control, mUndoService.Redo, () => mUndoService.CanRedo));
-            mInputActions.Add(mSaveAction = new DelegateInputAction("Save", Key.S, ModifierKeys.Control, Save, () => !mUndoService.IsSavePoint));
-            mInputActions.Add(mReloadAction = new DelegateInputAction("Reload from Disk", Key.F5, ModifierKeys.None, Reload));
+            mInputActions.Add(mUndoAction = new DelegateInputAction("Undo", Key.Z, ModifierKeys.Control, Images.ToolbarIcons.Undo, mUndoService.Undo, () => mUndoService.CanUndo));
+            mInputActions.Add(mRedoAction = new DelegateInputAction("Redo", Key.Y, ModifierKeys.Control, Images.ToolbarIcons.Redo, mUndoService.Redo, () => mUndoService.CanRedo));
+            mInputActions.Add(mSaveAction = new DelegateInputAction("Save", Key.S, ModifierKeys.Control, Images.ToolbarIcons.Save, Save, () => !mUndoService.IsSavePoint));
+            mInputActions.Add(mReloadAction = new DelegateInputAction("Reload from Disk", Key.F5, ModifierKeys.None, Images.ToolbarIcons.Refresh, Reload));
 
-            mInputActions.Add(mFilterAction = new DelegateInputAction("Filter Properties by Name", Key.F, ModifierKeys.Control, () => Keyboard.Focus(FilterElement)));
-            mInputActions.Add(mClearFilterAction = new DelegateInputAction("Clear Filter", Key.Escape, ModifierKeys.None, ClearFilter, () => !string.IsNullOrEmpty(PropertyFilter)));
-            mInputActions.Add(mRenamePropertyAction = new DelegateInputAction("Rename Property", Key.F2, ModifierKeys.None, RenameProperty, () => SelectedPropertyIndex >= 0));
-            mInputActions.Add(mCopyPropertyAction = new DelegateInputAction("Copy Property", Key.C, ModifierKeys.Control, CopyProperty, () => SelectedPropertyIndex >= 0));
-            mInputActions.Add(mPastePropertyAction = new DelegateInputAction("Paste Property", Key.V, ModifierKeys.Control, PasteProperty));
-            mInputActions.Add(mMovePropertyDownAction = new DelegateInputAction("Move Property Down", Key.Down, ModifierKeys.Alt, MovePropertyDown, CanMovePropertyDown));
-            mInputActions.Add(mMovePropertyUpAction = new DelegateInputAction("Move Property Up", Key.Up, ModifierKeys.Alt, MovePropertyUp, CanMovePropertyUp));
-            mInputActions.Add(mAddPropertyAction = new DelegateInputAction("Add Property", Key.Insert, ModifierKeys.None, AddProperty));
-            mInputActions.Add(mRemovePropertyAction = new DelegateInputAction("Remove Property", Key.Delete, ModifierKeys.None, RemoveProperty, () => SelectedPropertyIndex >= 0));
+            mInputActions.Add(mFilterAction = new DelegateInputAction("Filter Properties by Name", Key.F, ModifierKeys.Control, null, () => Keyboard.Focus(FilterElement)));
+            mInputActions.Add(mClearFilterAction = new DelegateInputAction("Clear Filter", Key.Escape, ModifierKeys.None, Images.ToolbarIcons.CloseAlt, ClearFilter, () => !string.IsNullOrEmpty(PropertyFilter)));
+
+            contextMenuItems.Add(mRenamePropertyAction = new DelegateInputAction("Rename Property", Key.F2, ModifierKeys.None, Images.ToolbarIcons.Rename, RenameProperty, () => SelectedPropertyIndex >= 0));
+            contextMenuItems.Add(null);
+            contextMenuItems.Add(mCopyPropertyAction = new DelegateInputAction("Copy Property", Key.C, ModifierKeys.Control, Images.ToolbarIcons.Copy, CopyProperty, () => SelectedPropertyIndex >= 0));
+            contextMenuItems.Add(mPastePropertyAction = new DelegateInputAction("Paste Property", Key.V, ModifierKeys.Control, Images.ToolbarIcons.Paste, PasteProperty));
+            contextMenuItems.Add(null);
+            contextMenuItems.Add(mMovePropertyDownAction = new DelegateInputAction("Move Property Down", Key.Down, ModifierKeys.Alt, Images.ToolbarIcons.MoveDown, MovePropertyDown, CanMovePropertyDown));
+            contextMenuItems.Add(mMovePropertyUpAction = new DelegateInputAction("Move Property Up", Key.Up, ModifierKeys.Alt, Images.ToolbarIcons.MoveUp, MovePropertyUp, CanMovePropertyUp));
+            contextMenuItems.Add(null);
+            contextMenuItems.Add(mAddPropertyAction = new DelegateInputAction("Add Property", Key.Insert, ModifierKeys.None, Images.ToolbarIcons.Add, AddProperty));
+            contextMenuItems.Add(mRemovePropertyAction = new DelegateInputAction("Remove Property", Key.Delete, ModifierKeys.None, Images.ToolbarIcons.Remove, RemoveProperty, () => SelectedPropertyIndex >= 0));
+            mInputActions.AddRange(contextMenuItems.Where(item => item != null));
 
             mUndoService.StateChanged += UndoService_StateChanged;
         }
