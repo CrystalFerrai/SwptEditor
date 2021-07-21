@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using SwptSaveEditor.Undo;
 using System;
 using System.Windows;
 using System.Windows.Controls;
@@ -20,6 +19,9 @@ using System.Windows.Input;
 
 namespace SwptSaveEditor.Document
 {
+    /// <summary>
+    /// View for a SaveDocument instance
+    /// </summary>
     internal partial class SaveDocumentView : UserControl
     {
         private SaveDocument ViewModel => (SaveDocument)DataContext;
@@ -72,35 +74,14 @@ namespace SwptSaveEditor.Document
             }
         }
 
-        private void DataGrid_PreviewKeyDown(object sender, KeyEventArgs e)
+        private void PropertyGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
         {
-            // DataGrid eats certain key presses when it has focus. We intercept it here first and decide if we want to delete the selected row.
-            // These are also handled in MainWindow.xaml.cs for the case where the grid does not have focus.
+            ViewModel.SuppressInputActions = true;
+        }
 
-            DataGrid grid = (DataGrid)sender;
-            if (grid.SelectedIndex < 0) return;
-
-            DataGridRow row = (DataGridRow)grid.ItemContainerGenerator.ContainerFromIndex(grid.SelectedIndex);
-            if (!row.IsEditing)
-            {
-                if (Keyboard.Modifiers == ModifierKeys.None && e.Key == Key.Delete)
-                {
-                    if (ViewModel.RemovePropertyCommand.CanExecute(null))
-                    {
-                        ViewModel.RemovePropertyCommand.Execute(null);
-                        e.Handled = true;
-                        grid.Focus();
-                    }
-                }
-                else if (Keyboard.Modifiers == ModifierKeys.Control && e.Key == Key.C)
-                {
-                    if (ViewModel.CopyPropertyCommand.CanExecute(null))
-                    {
-                        ViewModel.CopyPropertyCommand.Execute(null);
-                        e.Handled = true;
-                    }
-                }
-            }
+        private void PropertyGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+        {
+            ViewModel.SuppressInputActions = false;
         }
     }
 }

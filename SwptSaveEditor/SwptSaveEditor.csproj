@@ -93,10 +93,14 @@
       <DependentUpon>RenamePropertyDialogView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Document\DocumentService.cs" />
+    <Compile Include="Document\IDocument.cs" />
     <Compile Include="Document\SaveDocument.cs" />
     <Compile Include="Document\SaveDocumentView.xaml.cs">
       <DependentUpon>SaveDocumentView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Input\DelegateInputAction.cs" />
+    <Compile Include="Input\InputAction.cs" />
+    <Compile Include="Input\InputService.cs" />
     <Compile Include="SaveValueTemplateSelector.cs" />
     <Compile Include="Images.cs" />
     <Compile Include="MainWindow.xaml.cs">

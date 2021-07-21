@@ -166,8 +166,8 @@ namespace SwptSaveEditor.Behaviors
 
             if (e.EditAction == DataGridEditAction.Commit)
             {
-                SaveDocument doc = ((App)Application.Current).DocumentService.ActiveDocument;
-                doc.RecordValueEdit(record.Value, record.DataBackup);
+                SaveDocument doc = ((App)Application.Current).DocumentService.ActiveDocument as SaveDocument;
+                doc?.RecordValueEdit(record.Value, record.DataBackup);
             }
             else if (e.EditAction == DataGridEditAction.Cancel)
             {

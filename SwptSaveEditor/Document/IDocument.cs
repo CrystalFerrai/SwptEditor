@@ -12,23 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using SwptSaveEditor.Utils;
+using SwptSaveEditor.Input;
+using System.Collections.Generic;
 
 namespace SwptSaveEditor.Document
 {
     /// <summary>
-    /// Service for managing documents
+    /// Interface for a document, which represents the top level content of a tab in the editor
     /// </summary>
-    internal class DocumentService : ObservableObject
+    internal interface IDocument
     {
         /// <summary>
-        /// Gets or sets the currently active document
+        /// Input actions defined by the document for the input service to process
         /// </summary>
-        public IDocument ActiveDocument
-        {
-            get => _activeDocu8ment;
-            set => Set(ref _activeDocu8ment, value);
-        }
-        private IDocument _activeDocu8ment;
+        IEnumerable<InputAction> InputActions { get; }
     }
 }

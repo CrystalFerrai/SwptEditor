@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using SwptSaveEditor.Dialogs;
+using SwptSaveEditor.Input;
 using SwptSaveEditor.Undo;
 using SwptSaveEditor.Utils;
 using SwptSaveLib;
@@ -32,25 +33,29 @@ namespace SwptSaveEditor.Document
     /// <summary>
     /// View model for SaveFile instances being displayed in the editor
     /// </summary>
-    internal class SaveDocument : ViewModelBase
+    internal class SaveDocument : ViewModelBase, IDocument
     {
         private readonly SaveFile mFile;
 
         private readonly UndoService mUndoService;
+        private readonly InputService mInputService;
 
-        private readonly DelegateCommand mUndoCommand;
-        private readonly DelegateCommand mRedoCommand;
-        private readonly DelegateCommand mSaveCommand;
-        private readonly DelegateCommand mReloadCommand;
+        private readonly List<InputAction> mInputActions;
 
-        private readonly DelegateCommand mClearFilterCommand;
-        private readonly DelegateCommand mRenamePropertyCommand;
-        private readonly DelegateCommand mCopyPropertyCommand;
-        private readonly DelegateCommand mPastePropertyCommand;
-        private readonly DelegateCommand mMovePropertyUpCommand;
-        private readonly DelegateCommand mAddPropertyCommand;
-        private readonly DelegateCommand mRemovePropertyCommand;
-        private readonly DelegateCommand mMovePropertyDownCommand;
+        private readonly DelegateInputAction mUndoAction;
+        private readonly DelegateInputAction mRedoAction;
+        private readonly DelegateInputAction mSaveAction;
+        private readonly DelegateInputAction mReloadAction;
+
+        private readonly DelegateInputAction mFilterAction;
+        private readonly DelegateInputAction mClearFilterAction;
+        private readonly DelegateInputAction mRenamePropertyAction;
+        private readonly DelegateInputAction mCopyPropertyAction;
+        private readonly DelegateInputAction mPastePropertyAction;
+        private readonly DelegateInputAction mMovePropertyUpAction;
+        private readonly DelegateInputAction mAddPropertyAction;
+        private readonly DelegateInputAction mRemovePropertyAction;
+        private readonly DelegateInputAction mMovePropertyDownAction;
 
         public string Name => mFile.Name;
 
@@ -63,11 +68,11 @@ namespace SwptSaveEditor.Document
             {
                 if (Set(ref _selectedPropertyIndex, value))
                 {
-                    mRenamePropertyCommand.RaiseCanExecuteChanged();
-                    mCopyPropertyCommand.RaiseCanExecuteChanged();
-                    mMovePropertyDownCommand.RaiseCanExecuteChanged();
-                    mMovePropertyUpCommand.RaiseCanExecuteChanged();
-                    mRemovePropertyCommand.RaiseCanExecuteChanged();
+                    mRenamePropertyAction.RaiseCanExecuteChanged();
+                    mCopyPropertyAction.RaiseCanExecuteChanged();
+                    mMovePropertyDownAction.RaiseCanExecuteChanged();
+                    mMovePropertyUpAction.RaiseCanExecuteChanged();
+                    mRemovePropertyAction.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -81,8 +86,8 @@ namespace SwptSaveEditor.Document
                 if (Set(ref _nameSortDirection, value))
                 {
                     NotifyPropertyChanged(nameof(CanMoveProperties));
-                    mMovePropertyDownCommand.RaiseCanExecuteChanged();
-                    mMovePropertyUpCommand.RaiseCanExecuteChanged();
+                    mMovePropertyDownAction.RaiseCanExecuteChanged();
+                    mMovePropertyUpAction.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -96,8 +101,8 @@ namespace SwptSaveEditor.Document
                 if (Set(ref _typeSortDirection, value))
                 {
                     NotifyPropertyChanged(nameof(CanMoveProperties));
-                    mMovePropertyDownCommand.RaiseCanExecuteChanged();
-                    mMovePropertyUpCommand.RaiseCanExecuteChanged();
+                    mMovePropertyDownAction.RaiseCanExecuteChanged();
+                    mMovePropertyUpAction.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -120,9 +125,9 @@ namespace SwptSaveEditor.Document
                         view.Filter = (obj) => ((SaveProperty)obj).Name.ToLowerInvariant().Contains(value.Trim().ToLowerInvariant());
                     }
                     NotifyPropertyChanged(nameof(CanMoveProperties));
-                    mMovePropertyDownCommand.RaiseCanExecuteChanged();
-                    mMovePropertyUpCommand.RaiseCanExecuteChanged();
-                    mClearFilterCommand.RaiseCanExecuteChanged();
+                    mMovePropertyDownAction.RaiseCanExecuteChanged();
+                    mMovePropertyUpAction.RaiseCanExecuteChanged();
+                    mClearFilterAction.RaiseCanExecuteChanged();
                 }
             }
         }
@@ -134,59 +139,74 @@ namespace SwptSaveEditor.Document
 
         public IUndoService UndoService => mUndoService;
 
-        public ICommand UndoCommand => mUndoCommand;
+        public InputAction UndoAction => mUndoAction;
 
-        public ICommand RedoCommand => mRedoCommand;
+        public InputAction RedoAction => mRedoAction;
 
-        public ICommand SaveCommand => mSaveCommand;
+        public InputAction SaveAction => mSaveAction;
 
-        public ICommand ReloadCommand => mReloadCommand;
+        public InputAction ReloadAction => mReloadAction;
 
-        public ICommand ClearFilterCommand => mClearFilterCommand;
+        public InputAction FilterAction => mFilterAction;
 
-        public ICommand RenamePropertyCommand => mRenamePropertyCommand;
+        public InputAction ClearFilterAction => mClearFilterAction;
 
-        public ICommand CopyPropertyCommand => mCopyPropertyCommand;
+        public InputAction RenamePropertyAction => mRenamePropertyAction;
 
-        public ICommand PastePropertyCommand => mPastePropertyCommand;
+        public InputAction CopyPropertyAction => mCopyPropertyAction;
 
-        public ICommand MovePropertyDownCommand => mMovePropertyDownCommand;
+        public InputAction PastePropertyAction => mPastePropertyAction;
 
-        public ICommand MovePropertyUpCommand => mMovePropertyUpCommand;
+        public InputAction MovePropertyDownAction => mMovePropertyDownAction;
 
-        public ICommand AddPropertyCommand => mAddPropertyCommand;
+        public InputAction MovePropertyUpAction => mMovePropertyUpAction;
 
-        public ICommand RemovePropertyCommand => mRemovePropertyCommand;
+        public InputAction AddPropertyAction => mAddPropertyAction;
+
+        public InputAction RemovePropertyAction => mRemovePropertyAction;
+
+        public IEnumerable<InputAction> InputActions => mInputActions;
+
+        public bool SuppressInputActions
+        {
+            get => mInputService.SuppressActions;
+            set => mInputService.SuppressActions = value;
+        }
 
         public event EventHandler ResetFocus;
 
         public SaveDocument(IServiceProvider services, SaveFile file)
         {
+            services.Inject(out mInputService);
+
             mFile = file;
             mUndoService = new UndoService();
 
-            mUndoCommand = new DelegateCommand(mUndoService.Undo, () => mUndoService.CanUndo);
-            mRedoCommand = new DelegateCommand(mUndoService.Redo, () => mUndoService.CanRedo);
-            mSaveCommand = new DelegateCommand(Save, () => !mUndoService.IsSavePoint);
-            mReloadCommand = new DelegateCommand(Reload);
+            mInputActions = new List<InputAction>();
 
-            mClearFilterCommand = new DelegateCommand(ClearFilter, () => !string.IsNullOrEmpty(PropertyFilter));
-            mRenamePropertyCommand = new DelegateCommand(RenameProperty, () => SelectedPropertyIndex >= 0);
-            mCopyPropertyCommand = new DelegateCommand(CopyProperty, () => SelectedPropertyIndex >= 0);
-            mPastePropertyCommand = new DelegateCommand(PasteProperty);
-            mMovePropertyDownCommand = new DelegateCommand(MovePropertyDown, CanMovePropertyDown);
-            mMovePropertyUpCommand = new DelegateCommand(MovePropertyUp, CanMovePropertyUp);
-            mAddPropertyCommand = new DelegateCommand(AddProperty);
-            mRemovePropertyCommand = new DelegateCommand(RemoveProperty, () => SelectedPropertyIndex >= 0);
+            mInputActions.Add(mUndoAction = new DelegateInputAction("Undo", Key.Z, ModifierKeys.Control, mUndoService.Undo, () => mUndoService.CanUndo));
+            mInputActions.Add(mRedoAction = new DelegateInputAction("Redo", Key.Y, ModifierKeys.Control, mUndoService.Redo, () => mUndoService.CanRedo));
+            mInputActions.Add(mSaveAction = new DelegateInputAction("Save", Key.S, ModifierKeys.Control, Save, () => !mUndoService.IsSavePoint));
+            mInputActions.Add(mReloadAction = new DelegateInputAction("Reload from Disk", Key.F5, ModifierKeys.None, Reload));
+
+            mInputActions.Add(mFilterAction = new DelegateInputAction("Filter Properties by Name", Key.F, ModifierKeys.Control, () => Keyboard.Focus(FilterElement)));
+            mInputActions.Add(mClearFilterAction = new DelegateInputAction("Clear Filter", Key.Escape, ModifierKeys.None, ClearFilter, () => !string.IsNullOrEmpty(PropertyFilter)));
+            mInputActions.Add(mRenamePropertyAction = new DelegateInputAction("Rename Property", Key.F2, ModifierKeys.None, RenameProperty, () => SelectedPropertyIndex >= 0));
+            mInputActions.Add(mCopyPropertyAction = new DelegateInputAction("Copy Property", Key.C, ModifierKeys.Control, CopyProperty, () => SelectedPropertyIndex >= 0));
+            mInputActions.Add(mPastePropertyAction = new DelegateInputAction("Paste Property", Key.V, ModifierKeys.Control, PasteProperty));
+            mInputActions.Add(mMovePropertyDownAction = new DelegateInputAction("Move Property Down", Key.Down, ModifierKeys.Alt, MovePropertyDown, CanMovePropertyDown));
+            mInputActions.Add(mMovePropertyUpAction = new DelegateInputAction("Move Property Up", Key.Up, ModifierKeys.Alt, MovePropertyUp, CanMovePropertyUp));
+            mInputActions.Add(mAddPropertyAction = new DelegateInputAction("Add Property", Key.Insert, ModifierKeys.None, AddProperty));
+            mInputActions.Add(mRemovePropertyAction = new DelegateInputAction("Remove Property", Key.Delete, ModifierKeys.None, RemoveProperty, () => SelectedPropertyIndex >= 0));
 
             mUndoService.StateChanged += UndoService_StateChanged;
         }
 
         private void UndoService_StateChanged(object sender, EventArgs e)
         {
-            mUndoCommand.RaiseCanExecuteChanged();
-            mRedoCommand.RaiseCanExecuteChanged();
-            mSaveCommand.RaiseCanExecuteChanged();
+            mUndoAction.RaiseCanExecuteChanged();
+            mRedoAction.RaiseCanExecuteChanged();
+            mSaveAction.RaiseCanExecuteChanged();
             ResetFocus?.Invoke(this, EventArgs.Empty);
         }
 
@@ -203,7 +223,7 @@ namespace SwptSaveEditor.Document
         {
             mFile.Save();
             mUndoService.SetSavePoint();
-            mSaveCommand.RaiseCanExecuteChanged();
+            mSaveAction.RaiseCanExecuteChanged();
         }
 
         private void Reload()

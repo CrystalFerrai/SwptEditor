@@ -14,6 +14,7 @@
 
 using Microsoft.WindowsAPICodePack.Dialogs;
 using SwptSaveEditor.Document;
+using SwptSaveEditor.Input;
 using SwptSaveEditor.Settings;
 using SwptSaveEditor.Utils;
 using SwptSaveLib;
@@ -39,19 +40,21 @@ namespace SwptSaveEditor
 
         private static readonly string DefaultSaveDirectory = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "AppData\\LocalLow\\L2 Games\\She Will Punish Them");
 
-        private readonly IServiceProvider mServices;
+        private readonly ServiceRegistry mServices;
 
         private readonly DocumentService mDocumentService;
         private readonly SettingsService mSettingsService;
+        private readonly InputService mInputService;
 
         private readonly ObservableCollection<SaveDocument> mDocuments;
         private readonly ObservableCollection<SaveGameInfo> mRecentSaveGames;
 
-        private readonly DelegateCommand mOpenCommand;
-        private readonly DelegateCommand mCloseCommand;
-        private readonly DelegateCommand mReloadCommand;
-        private readonly DelegateCommand mSaveAllCommand;
-        private readonly DelegateCommand mSaveAllAsCommand;
+        private readonly DelegateInputAction mOpenAction;
+        private readonly DelegateInputAction mCloseAction;
+        private readonly DelegateInputAction mReloadAction;
+        private readonly DelegateInputAction mSaveAllAction;
+        private readonly DelegateInputAction mSaveAllAsAction;
+
         private readonly DelegateCommand<string> mOpenRecentCommand;
 
         private SaveGame mSaveGame;
@@ -120,23 +123,29 @@ namespace SwptSaveEditor
         }
         private double _windowHeight = 800.0;
 
-        public ICommand OpenCommand => mOpenCommand;
+        public InputService InputService => mInputService;
 
-        public ICommand CloseCommand => mCloseCommand;
+        public InputAction OpenAction => mOpenAction;
 
-        public ICommand ReloadCommand => mReloadCommand;
+        public InputAction CloseAction => mCloseAction;
 
-        public ICommand SaveAllCommand => mSaveAllCommand;
+        public InputAction ReloadAction => mReloadAction;
 
-        public ICommand SaveAllAsCommand => mSaveAllAsCommand;
+        public InputAction SaveAllAction => mSaveAllAction;
+
+        public InputAction SaveAllAsAction => mSaveAllAsAction;
 
         public ICommand OpenRecentCommand => mOpenRecentCommand;
 
         public MainWindowVM(IServiceProvider services)
         {
-            mServices = services;
             services.Inject(out mDocumentService);
             services.Inject(out mSettingsService);
+
+            mServices = new ServiceRegistry(services);
+
+            mInputService = new InputService(mServices);
+            mServices.AddService(mInputService);
 
             mDocuments = new ObservableCollection<SaveDocument>();
             mRecentSaveGames = new ObservableCollection<SaveGameInfo>();
@@ -145,11 +154,12 @@ namespace SwptSaveEditor
             mSettings.SettingsLoaded += Settings_SettingsLoaded;
             mSettingsService.RegisterProvider(mSettings);
 
-            mOpenCommand = new DelegateCommand(OpenSaveGame);
-            mCloseCommand = new DelegateCommand(CloseAll, () => IsSaveOpen);
-            mReloadCommand = new DelegateCommand(ReloadFromDisk, () => IsSaveOpen);
-            mSaveAllCommand = new DelegateCommand(SaveAllChanges, AnyUnsavedChanges);
-            mSaveAllAsCommand = new DelegateCommand(SaveAllAs, () => IsSaveOpen);
+            mInputService.GlobalActions.Add(mOpenAction = new DelegateInputAction("Open Save Game Folder", Key.O, ModifierKeys.Control, OpenSaveGame));
+            mInputService.GlobalActions.Add(mCloseAction = new DelegateInputAction("Close All", Key.F4, ModifierKeys.Control, CloseAll, () => IsSaveOpen));
+            mInputService.GlobalActions.Add(mReloadAction = new DelegateInputAction("Reload All from Disk", Key.R, ModifierKeys.Control, ReloadFromDisk, () => IsSaveOpen));
+            mInputService.GlobalActions.Add(mSaveAllAction = new DelegateInputAction("Save All Changed Files", Key.S, ModifierKeys.Control | ModifierKeys.Shift, SaveAllChanges, AnyUnsavedChanges));
+            mInputService.GlobalActions.Add(mSaveAllAsAction = new DelegateInputAction("Save All Files to a New Location", Key.N, ModifierKeys.Control, SaveAllAs, () => IsSaveOpen));
+
             mOpenRecentCommand = new DelegateCommand<string>((path) => LoadSaveGame(path));
         }
 
@@ -394,10 +404,10 @@ namespace SwptSaveEditor
         {
             NotifyPropertyChanged(nameof(IsSaveOpen));
 
-            mCloseCommand.RaiseCanExecuteChanged();
-            mReloadCommand.RaiseCanExecuteChanged();
-            mSaveAllCommand.RaiseCanExecuteChanged();
-            mSaveAllAsCommand.RaiseCanExecuteChanged();
+            mCloseAction.RaiseCanExecuteChanged();
+            mReloadAction.RaiseCanExecuteChanged();
+            mSaveAllAction.RaiseCanExecuteChanged();
+            mSaveAllAsAction.RaiseCanExecuteChanged();
         }
 
         private void Settings_SettingsLoaded(object sender, EventArgs e)
@@ -422,7 +432,7 @@ namespace SwptSaveEditor
 
         private void Document_StateChanged(object sender, EventArgs e)
         {
-            mSaveAllCommand.RaiseCanExecuteChanged();
+            mSaveAllAction.RaiseCanExecuteChanged();
         }
     }
 

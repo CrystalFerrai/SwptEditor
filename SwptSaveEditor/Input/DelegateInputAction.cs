@@ -13,22 +13,24 @@
 // limitations under the License.
 
 using SwptSaveEditor.Utils;
+using System;
+using System.Windows.Input;
 
-namespace SwptSaveEditor.Document
+namespace SwptSaveEditor.Input
 {
     /// <summary>
-    /// Service for managing documents
+    /// Helper to reduce boilerplate for owners of input actions which use delegate commands
     /// </summary>
-    internal class DocumentService : ObservableObject
+    internal class DelegateInputAction : InputAction
     {
-        /// <summary>
-        /// Gets or sets the currently active document
-        /// </summary>
-        public IDocument ActiveDocument
+        public DelegateInputAction(string name, Key key, ModifierKeys modifiers, Action execute, Func<bool> canExecute = null)
+            : base(name, new DelegateCommand(execute, canExecute), key, modifiers)
         {
-            get => _activeDocu8ment;
-            set => Set(ref _activeDocu8ment, value);
         }
-        private IDocument _activeDocu8ment;
+
+        public void RaiseCanExecuteChanged()
+        {
+            ((DelegateCommand)Command).RaiseCanExecuteChanged();
+        }
     }
 }

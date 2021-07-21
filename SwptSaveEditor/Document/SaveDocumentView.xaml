@@ -17,11 +17,16 @@
     x:ClassModifier="internal"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:root="clr-namespace:SwptSaveEditor"
+    xmlns:local="clr-namespace:SwptSaveEditor.Document"
     xmlns:b="clr-namespace:SwptSaveEditor.Behaviors"
     xmlns:c="clr-namespace:SwptSaveEditor.Controls"
     xmlns:u="clr-namespace:SwptSaveEditor.Utils"
-    FocusManager.FocusedElement="{Binding ElementName=PropertyGrid}">
+    mc:Ignorable="d"
+    FocusManager.FocusedElement="{Binding ElementName=PropertyGrid}"
+    d:DataContext="{d:DesignInstance Type={x:Type local:SaveDocument}, IsDesignTimeCreatable=True}">
     
     <Grid>
         <Grid.RowDefinitions>
@@ -95,9 +100,9 @@
                 </Grid.ColumnDefinitions>
                 
                 <Button
-                    ToolTip="Undo (Ctrl+Z)"
+                    ToolTip="{Binding UndoAction.ToolTip}"
                     ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding UndoCommand}">
+                    Command="{Binding UndoAction.Command}">
                     <Image
                         Stretch="None"
                         Source="{x:Static root:Images+ToolbarIcons.Undo}"
@@ -106,9 +111,9 @@
                 
                 <Button
                     Grid.Column="2"
-                    ToolTip="Redo (Ctrl+Y)"
+                    ToolTip="{Binding RedoAction.ToolTip}"
                     ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding RedoCommand}">
+                    Command="{Binding RedoAction.Command}">
                     <Image
                         Stretch="None"
                         Source="{x:Static root:Images+ToolbarIcons.Redo}"
@@ -120,9 +125,9 @@
 
                 <Button
                     Grid.Column="6"
-                    ToolTip="Save (Ctrl+S)"
+                    ToolTip="{Binding SaveAction.ToolTip}"
                     ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding SaveCommand}">
+                    Command="{Binding SaveAction.Command}">
                     <Image
                         Stretch="None"
                         Source="{x:Static root:Images+ToolbarIcons.Save}"
@@ -131,9 +136,9 @@
 
                 <Button
                     Grid.Column="8"
-                    ToolTip="Reload from Disk (F5)"
+                    ToolTip="{Binding ReloadAction.ToolTip}"
                     ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding ReloadCommand}">
+                    Command="{Binding ReloadAction.Command}">
                     <Image
                         Stretch="None"
                         Source="{x:Static root:Images+ToolbarIcons.Refresh}"
@@ -159,14 +164,14 @@
                     <TextBox
                         x:Name="FilterTextBox"
                         Grid.Column="2"
-                        ToolTip="Filter Properties by Name (Ctrl+F)"
+                        ToolTip="{Binding FilterAction.ToolTip}"
                         Text="{Binding PropertyFilter, UpdateSourceTrigger=PropertyChanged}" />
 
                     <Button
                         Grid.Column="4"
-                        ToolTip="Clear Filter (Esc)"
+                        ToolTip="{Binding ClearFilterAction.ToolTip}"
                         ToolTipService.ShowOnDisabled="True"
-                        Command="{Binding ClearFilterCommand}"
+                        Command="{Binding ClearFilterAction.Command}"
                         Style="{StaticResource BorderlessButton}">
                         <Image
                             Stretch="None"
@@ -181,9 +186,9 @@
 
                 <Button
                     Grid.Column="14"
-                    ToolTip="Rename Property (F2)"
+                    ToolTip="{Binding RenamePropertyAction.ToolTip}"
                     ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding RenamePropertyCommand}">
+                    Command="{Binding RenamePropertyAction.Command}">
                     <Image
                         Stretch="None"
                         Source="{x:Static root:Images+ToolbarIcons.Rename}"
@@ -195,9 +200,9 @@
 
                 <Button
                     Grid.Column="18"
-                    ToolTip="Copy Property (Ctrl+C)"
+                    ToolTip="{Binding CopyPropertyAction.ToolTip}"
                     ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding CopyPropertyCommand}">
+                    Command="{Binding CopyPropertyAction.Command}">
                     <Image
                         Stretch="None"
                         Source="{x:Static root:Images+ToolbarIcons.Copy}"
@@ -206,9 +211,9 @@
 
                 <Button
                     Grid.Column="20"
-                    ToolTip="Paste Property (Ctrl+V)"
+                    ToolTip="{Binding PastePropertyAction.ToolTip}"
                     ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding PastePropertyCommand}">
+                    Command="{Binding PastePropertyAction.Command}">
                     <Image
                         Stretch="None"
                         Source="{x:Static root:Images+ToolbarIcons.Paste}"
@@ -221,17 +226,17 @@
                 <Button
                     Grid.Column="24"
                     ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding MovePropertyUpCommand}">
+                    Command="{Binding MovePropertyUpAction.Command}">
                     <Button.Style>
                         <Style
                             TargetType="{x:Type Button}">
-                            <Setter Property="ToolTip" Value="Move Property Up (Alt+Up)" />
+                            <Setter Property="ToolTip" Value="{Binding MovePropertyUpAction.ToolTip}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding CanMoveProperties}" Value="False">
                                     <Setter Property="ToolBar.ToolTip">
                                         <Setter.Value>
                                             <TextBlock>
-                                                <Run Text="Move Property Up (Alt+Up)" /><LineBreak /><Run FontStyle="Italic" Text="Properties must be unsorted and unfiltered" />
+                                                <Run Text="{Binding MovePropertyUpAction.ToolTip}" /><LineBreak /><Run FontStyle="Italic" Text="Properties must be unsorted and unfiltered" />
                                             </TextBlock>
                                         </Setter.Value>
                                     </Setter>
@@ -248,17 +253,17 @@
                 <Button
                     Grid.Column="26"
                     ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding MovePropertyDownCommand}">
+                    Command="{Binding MovePropertyDownAction.Command}">
                     <Button.Style>
                         <Style
                             TargetType="{x:Type Button}">
-                            <Setter Property="ToolTip" Value="Move Property Down (Alt+Down)" />
+                            <Setter Property="ToolTip" Value="{Binding MovePropertyDownAction.ToolTip}" />
                             <Style.Triggers>
                                 <DataTrigger Binding="{Binding CanMoveProperties}" Value="False">
                                     <Setter Property="ToolBar.ToolTip">
                                         <Setter.Value>
                                             <TextBlock>
-                                                <Run Text="Move Property Down (Alt+Down)" /><LineBreak /><Run FontStyle="Italic" Text="Properties must be unsorted and unfiltered" />
+                                                <Run Text="{Binding MovePropertyDownAction.ToolTip}" /><LineBreak /><Run FontStyle="Italic" Text="Properties must be unsorted and unfiltered" />
                                             </TextBlock>
                                         </Setter.Value>
                                     </Setter>
@@ -277,9 +282,9 @@
 
                 <Button
                     Grid.Column="30"
-                    ToolTip="Add Property (Ins)"
+                    ToolTip="{Binding AddPropertyAction.ToolTip}"
                     ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding AddPropertyCommand}">
+                    Command="{Binding AddPropertyAction.Command}">
                     <Image
                         Stretch="None"
                         Source="{x:Static root:Images+ToolbarIcons.Add}"
@@ -288,9 +293,9 @@
 
                 <Button
                     Grid.Column="32"
-                    ToolTip="Remove Property (Del)"
+                    ToolTip="{Binding RemovePropertyAction.ToolTip}"
                     ToolTipService.ShowOnDisabled="True"
-                    Command="{Binding RemovePropertyCommand}">
+                    Command="{Binding RemovePropertyAction.Command}">
                     <Image
                         Stretch="None"
                         Source="{x:Static root:Images+ToolbarIcons.Remove}"
@@ -314,7 +319,8 @@
             SelectionMode="Single"
             SelectionUnit="FullRow"
             HeadersVisibility="Column"
-            PreviewKeyDown="DataGrid_PreviewKeyDown"
+            BeginningEdit="PropertyGrid_BeginningEdit"
+            RowEditEnding="PropertyGrid_RowEditEnding"
             b:DataGridBehavior.UseThreeStateSort="True"
             b:DataGridBehavior.IsSaveValueColumn="True"
             Width="{Binding Path=ActualWidth, RelativeSource={RelativeSource AncestorType={x:Type FrameworkElement}}}"
