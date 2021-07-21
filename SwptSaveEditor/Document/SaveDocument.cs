@@ -174,7 +174,14 @@ namespace SwptSaveEditor.Document
         public bool SuppressInputActions
         {
             get => mInputService.SuppressActions;
-            set => mInputService.SuppressActions = value;
+            set
+            {
+                if (mInputService.SuppressActions != value)
+                {
+                    mInputService.SuppressActions = value;
+                    NotifyPropertyChanged(nameof(SuppressInputActions));
+                }
+            }
         }
 
         public event EventHandler ResetFocus;

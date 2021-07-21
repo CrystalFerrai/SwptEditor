@@ -154,14 +154,19 @@ namespace SwptSaveLib.ValueTypes
             mData.Insert(index - 1, val);
         }
 
-        public void AddNewItem()
+        public SaveValue CreateItem()
         {
-            mData.Add(Create(ItemType));
+            return Create(ItemType);
         }
 
-        public void InsertNewItem(int index)
+        public void AddItem(SaveValue item)
         {
-            mData.Insert(index, Create(ItemType));
+            mData.Add(item);
+        }
+
+        public void InsertItem(int index, SaveValue item)
+        {
+            mData.Insert(index, item);
         }
 
         public void RemoveItem(int index)

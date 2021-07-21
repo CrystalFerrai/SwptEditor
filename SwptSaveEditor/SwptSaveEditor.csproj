@@ -77,6 +77,7 @@
     <Compile Include="Controls\ColorPicker.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\ColorToStringConverter.cs" />
+    <Compile Include="Converters\InverseBoolConverter.cs" />
     <Compile Include="Converters\PrimitiveToStringConverter.cs" />
     <Compile Include="Converters\ColorConverter.cs" />
     <Compile Include="Behaviors\DataGridBehavior.cs" />

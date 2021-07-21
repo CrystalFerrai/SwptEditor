@@ -49,9 +49,16 @@ namespace SwptSaveEditor.Controls
         private readonly DelegateInputAction mClearItemsAction;
 
         private DataGrid mDataGrid;
-        private bool mIsEditing;
-
+        
         private ArrayValue Data => DataContext as ArrayValue;
+
+        public bool IsEditing
+        {
+            get { return (bool )GetValue(IsEditingProperty); }
+            set { SetValue(IsEditingProperty, value); }
+        }
+        public static readonly DependencyProperty IsEditingProperty = DependencyProperty.Register(nameof(IsEditing), typeof(bool), typeof(ArrayEditor),
+            new PropertyMetadata(false));
 
         public InputAction CommitAction => mCommitAction;
 
@@ -69,18 +76,28 @@ namespace SwptSaveEditor.Controls
 
         public InputAction ClearItemsAction => mClearItemsAction;
 
+        public IEnumerable<InputAction> ContextMenuItems { get; }
+
         public ArrayEditor()
         {
             mUndoService = new UndoService();
             mActions = new List<InputAction>();
 
+            List<InputAction> contextMenuItems = new List<InputAction>();
+            ContextMenuItems = contextMenuItems;
+
             mActions.Add(mCommitAction = new DelegateInputAction("Commit Changes", Key.Enter, ModifierKeys.Alt, Images.ToolbarIcons.Checkmark, CommitChanges, () => !mUndoService.IsSavePoint));
-            mActions.Add(mUndoAction = new DelegateInputAction("Undo", Key.Z, ModifierKeys.Control, Images.ToolbarIcons.Undo, mUndoService.Undo, () => mUndoService.CanUndo));
-            mActions.Add(mRedoAction = new DelegateInputAction("Redo", Key.Y, ModifierKeys.Control, Images.ToolbarIcons.Redo, mUndoService.Redo, () => mUndoService.CanRedo));
-            mActions.Add(mMoveItemDownAction = new DelegateInputAction("Move Item Down", Key.Down, ModifierKeys.Alt, Images.ToolbarIcons.MoveDown, MoveItemDown, () => mDataGrid?.SelectedItems.Count == 1 && mDataGrid?.SelectedIndex < Data?.Count - 1));
-            mActions.Add(mMoveItemUpAction = new DelegateInputAction("Move Item Up", Key.Up, ModifierKeys.Alt, Images.ToolbarIcons.MoveUp, MoveItemUp, () => mDataGrid?.SelectedItems.Count == 1 && mDataGrid?.SelectedIndex > 0));
-            mActions.Add(mAddItemAction = new DelegateInputAction("Add Item", Key.Insert, ModifierKeys.None, Images.ToolbarIcons.Add, AddNewItem));
-            mActions.Add(mDeleteItemsAction = new DelegateInputAction("Delete Selected Items", Key.Delete, ModifierKeys.None, Images.ToolbarIcons.Remove, DeleteItems, () => mDataGrid?.SelectedItems.Count >= 0));
+
+            contextMenuItems.Add(mUndoAction = new DelegateInputAction("Undo", Key.Z, ModifierKeys.Control, Images.ToolbarIcons.Undo, mUndoService.Undo, () => mUndoService.CanUndo));
+            contextMenuItems.Add(mRedoAction = new DelegateInputAction("Redo", Key.Y, ModifierKeys.Control, Images.ToolbarIcons.Redo, mUndoService.Redo, () => mUndoService.CanRedo));
+            contextMenuItems.Add(null);
+            contextMenuItems.Add(mMoveItemDownAction = new DelegateInputAction("Move Item Down", Key.Down, ModifierKeys.Alt, Images.ToolbarIcons.MoveDown, MoveItemDown, () => mDataGrid?.SelectedItems.Count == 1 && mDataGrid?.SelectedIndex < Data?.Count - 1));
+            contextMenuItems.Add(mMoveItemUpAction = new DelegateInputAction("Move Item Up", Key.Up, ModifierKeys.Alt, Images.ToolbarIcons.MoveUp, MoveItemUp, () => mDataGrid?.SelectedItems.Count == 1 && mDataGrid?.SelectedIndex > 0));
+            contextMenuItems.Add(null);
+            contextMenuItems.Add(mAddItemAction = new DelegateInputAction("Add Item", Key.Insert, ModifierKeys.None, Images.ToolbarIcons.Add, AddNewItem));
+            contextMenuItems.Add(mDeleteItemsAction = new DelegateInputAction("Delete Selected Items", Key.Delete, ModifierKeys.None, Images.ToolbarIcons.Remove, DeleteItems, () => mDataGrid?.SelectedItems.Count >= 0));
+            mActions.AddRange(contextMenuItems.Where(i => i != null));
+
             mActions.Add(mClearItemsAction = new DelegateInputAction("Delete All Items", Key.Delete, ModifierKeys.Control, Images.ToolbarIcons.Close, ClearItems, () => Data?.Count > 0));
 
             Focusable = true;
@@ -129,7 +146,7 @@ namespace SwptSaveEditor.Controls
 
         protected override void OnPreviewKeyDown(KeyEventArgs e)
         {
-            if (!mIsEditing)
+            if (!IsEditing)
             {
                 InputService.ProcessActions(mActions, e);
             }
@@ -159,12 +176,12 @@ namespace SwptSaveEditor.Controls
 
         private void DataGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
         {
-            mIsEditing = true;
+            SetCurrentValue(IsEditingProperty, true);
         }
 
         private void DataGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
         {
-            mIsEditing = false;
+            SetCurrentValue(IsEditingProperty, false);
         }
 
         private void MoveItemDown()
@@ -217,11 +234,12 @@ namespace SwptSaveEditor.Controls
 
             int index = mDataGrid.SelectedIndex + 1;
             if (index <= 0) index = Data.Count;
+            SaveValue item = Data.CreateItem();
 
             DelegateUndoUnit unit = DelegateUndoUnit.CreateAndExecute(
                 () =>
                 {
-                    Data.InsertNewItem(index);
+                    Data.InsertItem(index, item);
                     mDataGrid.SelectedIndex = index;
                 },
                 () =>
@@ -240,8 +258,7 @@ namespace SwptSaveEditor.Controls
 
             int index = mDataGrid.SelectedIndex;
             int[] indices = mDataGrid.SelectedItems.Cast<SaveValue>().Select(i => Data.IndexOfItem(i)).ToArray();
-            IList items = new ArrayList(mDataGrid.SelectedItems);
-            object oldData = Data.CloneData();
+            SaveValue[] items = mDataGrid.SelectedItems.Cast<SaveValue>().ToArray();
             DelegateUndoUnit unit = DelegateUndoUnit.CreateAndExecute(
                 () =>
                 {
@@ -258,11 +275,11 @@ namespace SwptSaveEditor.Controls
                 },
                 () =>
                 {
-                    Data.Data = oldData;
                     mDataGrid.SelectedItems.Clear();
-                    foreach (int i in indices)
+                    for (int i = 0; i < indices.Length; ++i)
                     {
-                        mDataGrid.SelectedItems.Add(Data[i]);
+                        Data.InsertItem(indices[i], items[i]);
+                        mDataGrid.SelectedItems.Add(items[i]);
                     }
                 });
             mUndoService.PushUndoUnit(unit);
@@ -273,8 +290,7 @@ namespace SwptSaveEditor.Controls
         private void ClearItems()
         {
             int[] indices = mDataGrid.SelectedItems.Cast<SaveValue>().Select(i => Data.IndexOfItem(i)).ToArray();
-            IList items = new ArrayList(mDataGrid.SelectedItems);
-            object oldData = Data.CloneData();
+            SaveValue[] items = ((IEnumerable<SaveValue>)Data.Data).ToArray();
             DelegateUndoUnit unit = DelegateUndoUnit.CreateAndExecute(
                 () =>
                 {
@@ -282,10 +298,13 @@ namespace SwptSaveEditor.Controls
                 },
                 () =>
                 {
-                    Data.Data = oldData;
-                    foreach (int i in indices)
+                    for (int i = 0; i < items.Length; ++i)
                     {
-                        mDataGrid.SelectedItems.Add(Data[i]);
+                        Data.AddItem(items[i]);
+                    }
+                    for (int i = 0; i < indices.Length; ++i)
+                    {
+                        mDataGrid.SelectedItems.Add(items[indices[i]]);
                     }
                 });
             mUndoService.PushUndoUnit(unit);

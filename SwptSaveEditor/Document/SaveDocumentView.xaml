@@ -21,6 +21,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:root="clr-namespace:SwptSaveEditor"
     xmlns:local="clr-namespace:SwptSaveEditor.Document"
+    xmlns:conv="clr-namespace:SwptSaveEditor.Converters"
     xmlns:b="clr-namespace:SwptSaveEditor.Behaviors"
     xmlns:c="clr-namespace:SwptSaveEditor.Controls"
     xmlns:u="clr-namespace:SwptSaveEditor.Utils"
@@ -269,39 +270,50 @@
                     </Style.Triggers>
                 </Style>
             </DataGrid.Resources>
-            <DataGrid.ContextMenu>
-                <ContextMenu
-                    ItemsSource="{Binding ContextMenuItems}">
-                    <ContextMenu.Resources>
-                        <Image
-                            x:Key="MenuIcon"
-                            x:Shared="False"
-                            Stretch="None"
-                            Source="{Binding Icon}"
-                            Style="{StaticResource ImageEnableStyle}" />
-                    </ContextMenu.Resources>
-                    <ContextMenu.ItemContainerStyle>
-                        <Style
-                            TargetType="{x:Type MenuItem}">
-                            <Setter Property="Command" Value="{Binding Command}" />
-                            <Setter Property="Icon" Value="{StaticResource MenuIcon}" />
-                            <Setter Property="Header" Value="{Binding Name}" />
-                            <Setter Property="InputGestureText" Value="{Binding Shortcut}" />
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding}" Value="{x:Null}">
-                                    <Setter Property="Template">
-                                        <Setter.Value>
-                                            <ControlTemplate>
-                                                <Separator />
-                                            </ControlTemplate>
-                                        </Setter.Value>
-                                    </Setter>
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </ContextMenu.ItemContainerStyle>
-                </ContextMenu>
-            </DataGrid.ContextMenu>
+            <DataGrid.Style>
+                <Style
+                    TargetType="{x:Type DataGrid}">
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SuppressInputActions}" Value="False">
+                            <Setter Property="ContextMenu">
+                                <Setter.Value>
+                                    <ContextMenu
+                                        ItemsSource="{Binding ContextMenuItems}">
+                                        <ContextMenu.Resources>
+                                            <Image
+                                                x:Key="MenuIcon"
+                                                x:Shared="False"
+                                                Stretch="None"
+                                                Source="{Binding Icon}"
+                                                Style="{StaticResource ImageEnableStyle}" />
+                                        </ContextMenu.Resources>
+                                        <ContextMenu.ItemContainerStyle>
+                                            <Style
+                                                TargetType="{x:Type MenuItem}">
+                                                <Setter Property="Command" Value="{Binding Command}" />
+                                                <Setter Property="Icon" Value="{StaticResource MenuIcon}" />
+                                                <Setter Property="Header" Value="{Binding Name}" />
+                                                <Setter Property="InputGestureText" Value="{Binding Shortcut}" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding}" Value="{x:Null}">
+                                                        <Setter Property="Template">
+                                                            <Setter.Value>
+                                                                <ControlTemplate>
+                                                                    <Separator />
+                                                                </ControlTemplate>
+                                                            </Setter.Value>
+                                                        </Setter>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </ContextMenu.ItemContainerStyle>
+                                    </ContextMenu>
+                                </Setter.Value>
+                            </Setter>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </DataGrid.Style>
             <DataGrid.Columns>
                 <DataGridTextColumn
                     Header="Name"
