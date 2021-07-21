@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using SwptSaveEditor.Behaviors;
 using SwptSaveEditor.Dialogs;
 using SwptSaveEditor.Input;
 using SwptSaveEditor.Undo;
@@ -34,7 +35,7 @@ namespace SwptSaveEditor.Document
     /// <summary>
     /// View model for SaveFile instances being displayed in the editor
     /// </summary>
-    internal class SaveDocument : ViewModelBase, IDocument
+    internal class SaveDocument : ViewModelBase, IDocument, IDataGridOwner
     {
         private readonly SaveFile mFile;
 

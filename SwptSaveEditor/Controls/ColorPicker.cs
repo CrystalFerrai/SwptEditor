@@ -81,6 +81,7 @@ namespace SwptSaveEditor.Controls
             if (window.ShowDialog() == true)
             {
                 SetCurrentValue(ColorProperty, popup.Color);
+                CommitChanges();
             }
         }
 
@@ -119,6 +120,18 @@ namespace SwptSaveEditor.Controls
                 e.Handled = true;
             }
             base.OnMouseDown(e);
+        }
+
+        private void CommitChanges()
+        {
+            for (DependencyObject current = VisualTreeHelper.GetParent(this); current is Visual; current = VisualTreeHelper.GetParent(current))
+            {
+                if (current is DataGrid grid)
+                {
+                    grid.CommitEdit(DataGridEditingUnit.Row, true);
+                    break;
+                }
+            }
         }
     }
 

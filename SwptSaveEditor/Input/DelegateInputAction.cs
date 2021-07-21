@@ -34,4 +34,20 @@ namespace SwptSaveEditor.Input
             ((DelegateCommand)Command).RaiseCanExecuteChanged();
         }
     }
+
+    /// <summary>
+    /// Helper to reduce boilerplate for owners of input actions which use delegate commands
+    /// </summary>
+    internal class DelegateInputAction<T> : InputAction
+    {
+        public DelegateInputAction(string name, Key key, ModifierKeys modifiers, ImageSource icon, Action<T> execute, Func<T, bool> canExecute = null)
+            : base(name, new DelegateCommand<T>(execute, canExecute), key, modifiers, icon)
+        {
+        }
+
+        public void RaiseCanExecuteChanged()
+        {
+            ((DelegateCommand)Command).RaiseCanExecuteChanged();
+        }
+    }
 }

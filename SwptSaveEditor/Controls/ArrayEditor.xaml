@@ -15,9 +15,13 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:root="clr-namespace:SwptSaveEditor"
     xmlns:local="clr-namespace:SwptSaveEditor.Controls"
-    xmlns:b="clr-namespace:SwptSaveEditor.Behaviors">
+    xmlns:b="clr-namespace:SwptSaveEditor.Behaviors"
+    xmlns:lib="clr-namespace:SwptSaveLib;assembly=SwptSaveLib"
+    mc:Ignorable="d">
 
     <Style
         TargetType="{x:Type local:ArrayEditor}">
@@ -25,17 +29,19 @@
             <Setter.Value>
                 <ControlTemplate
                     TargetType="{x:Type local:ArrayEditor}">
-                    <Grid>
+                    <Grid
+                        d:DataContext="{d:DesignInstance Type={x:Type lib:SaveValue}}">
                         <Grid.RowDefinitions>
                             <RowDefinition Height="auto" />
                             <RowDefinition Height="auto" />
                         </Grid.RowDefinitions>
+                        
                         <ScrollViewer
                             HorizontalScrollBarVisibility="Hidden"
                             VerticalScrollBarVisibility="Auto"
                             MaxHeight="400">
                             <DataGrid
-                                x:Name="ArrayDataGrid"
+                                Name="PART_DataGrid"
                                 AutoGenerateColumns="False"
                                 HeadersVisibility="None"
                                 CanUserSortColumns="False"
@@ -56,38 +62,109 @@
                                 </DataGrid.Columns>
                             </DataGrid>
                         </ScrollViewer>
+                        
                         <Border
                             Grid.Row="1"
                             BorderBrush="Black"
                             BorderThickness="1"
                             Background="#fff0f0f0">
+                            <Border.Resources>
+                                <Style
+                                    TargetType="{x:Type Separator}">
+                                    <Setter Property="Template">
+                                        <Setter.Value>
+                                            <ControlTemplate
+                                                TargetType="{x:Type Separator}">
+                                                <Border
+                                                    Margin="2 0"
+                                                    Width="1"
+                                                    VerticalAlignment="Stretch"
+                                                    Background="#ffa0a0a0"/>
+                                            </ControlTemplate>
+                                        </Setter.Value>
+                                    </Setter>
+                                </Style>
+                            </Border.Resources>
                             <Grid
                                 Margin="2"
                                 TextElement.FontFamily="Segoe UI">
                                 <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="Auto" MinWidth="100" />
-                                    <ColumnDefinition Width="20" />
-                                    <ColumnDefinition Width="Auto" MinWidth="100" />
-                                    <ColumnDefinition Width="40" />
-                                    <ColumnDefinition Width="Auto" MinWidth="100" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="4" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="4" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="4" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="4" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="4" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="4" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="4" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="4" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="4" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="4" />
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="4" />
+                                    <ColumnDefinition Width="Auto" />
                                 </Grid.ColumnDefinitions>
-                                <Button
-                                    Padding="8 2"
-                                    Content="Add Item"
-                                    Command="{Binding AddItemCommand, RelativeSource={RelativeSource TemplatedParent}}" />
-                                <Button
-                                    Grid.Column="2"
-                                    Padding="8 2"
-                                    Content="Delete Selected"
-                                    Command="{Binding DeleteItemsCommand, RelativeSource={RelativeSource TemplatedParent}}"
-                                    CommandParameter="{Binding SelectedItems, ElementName=ArrayDataGrid}" />
-                                <Button
+
+                                <ContentPresenter
+                                    Content="{Binding CommitAction, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Style="{StaticResource ToolbarButtonStyle}" />
+
+                                <Separator
+                                    Grid.Column="2" />
+
+                                <ContentPresenter
                                     Grid.Column="4"
-                                    Padding="8 2"
-                                    Content="Delete All"
-                                    Background="#ffe0d0d0"
-                                    BorderBrush="#ff800000"
-                                    Command="{Binding ClearItemsCommand, RelativeSource={RelativeSource TemplatedParent}}" />
+                                    Content="{Binding UndoAction, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Style="{StaticResource ToolbarButtonStyle}" />
+
+                                <ContentPresenter
+                                    Grid.Column="6"
+                                    Content="{Binding RedoAction, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Style="{StaticResource ToolbarButtonStyle}" />
+
+                                <Separator
+                                    Grid.Column="8" />
+
+                                <ContentPresenter
+                                    Grid.Column="10"
+                                    Content="{Binding MoveItemUpAction, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Style="{StaticResource ToolbarButtonStyle}" />
+
+                                <ContentPresenter
+                                    Grid.Column="12"
+                                    Content="{Binding MoveItemDownAction, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Style="{StaticResource ToolbarButtonStyle}" />
+
+                                <Separator
+                                    Grid.Column="14" />
+
+                                <ContentPresenter
+                                    Grid.Column="16"
+                                    Content="{Binding AddItemAction, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Style="{StaticResource ToolbarButtonStyle}" />
+
+                                <ContentPresenter
+                                    Grid.Column="18"
+                                    Content="{Binding DeleteItemsAction, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Style="{StaticResource ToolbarButtonStyle}" />
+
+                                <Separator
+                                    Grid.Column="20" />
+
+                                <ContentPresenter
+                                    Grid.Column="22"
+                                    Content="{Binding ClearItemsAction, RelativeSource={RelativeSource TemplatedParent}}"
+                                    Style="{StaticResource ToolbarButtonStyle}" />
+
                             </Grid>
                         </Border>
                     </Grid>

@@ -58,7 +58,7 @@ namespace SwptSaveEditor.Input
         private static string GetShortcutString(ModifierKeys modifiers, Key key)
         {
             KeyConverter kc = new KeyConverter();
-            string keyName = kc.ConvertToString(key);
+            string keyName = key == Key.Enter ? "Enter" : kc.ConvertToString(key);
 
             if (string.IsNullOrEmpty(keyName))
             {

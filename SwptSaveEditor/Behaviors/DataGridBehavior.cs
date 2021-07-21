@@ -14,10 +14,13 @@
 
 using SwptSaveEditor.Document;
 using SwptSaveLib;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Media;
+using System.Windows.Threading;
 
 namespace SwptSaveEditor.Behaviors
 {
@@ -166,13 +169,47 @@ namespace SwptSaveEditor.Behaviors
 
             if (e.EditAction == DataGridEditAction.Commit)
             {
-                SaveDocument doc = ((App)Application.Current).DocumentService.ActiveDocument as SaveDocument;
-                doc?.RecordValueEdit(record.Value, record.DataBackup);
+                IDataGridOwner owner = FindOwner(sender as DependencyObject);
+                if (owner != null)
+                {
+                    // Delay here allows the value to reliably be updated before we pass it along
+                    Dispatcher.CurrentDispatcher.BeginInvoke(new Action(() =>
+                    {
+                        owner?.RecordValueEdit(record.Value, record.DataBackup);
+                    }), DispatcherPriority.Input);
+                }
             }
             else if (e.EditAction == DataGridEditAction.Cancel)
             {
                 record.Value.Data = record.DataBackup;
             }
         }
+
+        private static IDataGridOwner FindOwner(DependencyObject grid)
+        {
+            if (grid == null) return null;
+
+            for (DependencyObject current = grid; current is Visual; current = VisualTreeHelper.GetParent(current))
+            {
+                if (current is IDataGridOwner owner) return owner;
+                if (current is FrameworkElement element)
+                {
+                    if (element.DataContext is IDataGridOwner own) return own;
+                }
+            }
+
+            return null;
+        }
+    }
+
+    /// <summary>
+    /// Interface for an object which owns a data grid that makes use of IsSaveValueColumn attached property
+    /// </summary>
+    internal interface IDataGridOwner
+    {
+        /// <summary>
+        /// Called when new data is committed to a data grid cell within a column that is set to IsSaveValueColumn
+        /// </summary>
+        void RecordValueEdit(SaveValue value, object oldData);
     }
 }

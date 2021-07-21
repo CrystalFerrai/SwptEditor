@@ -167,6 +167,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ToolbarStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\SwptSaveLib\SwptSaveLib.csproj">
@@ -179,6 +183,7 @@
     <Resource Include="Images\Markers\ArrowLeft.png" />
     <Resource Include="Images\Markers\ArrowRight.png" />
     <Resource Include="Images\Markers\ArrowUp.png" />
+    <Resource Include="Images\ToolbarIcons\Checkmark.png" />
     <Resource Include="Images\Markers\Crosshair.png" />
     <Resource Include="Images\ToolbarIcons\Add.png" />
     <Resource Include="Images\ToolbarIcons\AddFolder.png" />

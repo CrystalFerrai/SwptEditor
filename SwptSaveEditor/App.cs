@@ -50,7 +50,9 @@ namespace SwptSaveEditor
         {
             mServices = new ServiceRegistry();
 
-            // You can include additional files here, but you should probably include them from within Resources.xaml
+            // ToolbarStyles must be explicitly loaded before Resources (rather than included by Resources) due to
+            // annoying ResourceDictionary loading issues
+            Resources.MergedDictionaries.Add(LoadResourceDictionary("ToolbarStyles.xaml"));
             Resources.MergedDictionaries.Add(LoadResourceDictionary("Resources.xaml"));
         }
 

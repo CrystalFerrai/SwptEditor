@@ -66,7 +66,7 @@ namespace SwptSaveEditor.Input
             ProcessActions(mGlobalActions, args);
         }
 
-        private static void ProcessActions(IEnumerable<InputAction> actions, InputEventArgs args)
+        public static void ProcessActions(IEnumerable<InputAction> actions, InputEventArgs args)
         {
             foreach (InputAction action in actions)
             {

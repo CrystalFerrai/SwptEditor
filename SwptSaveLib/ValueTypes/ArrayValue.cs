@@ -60,6 +60,14 @@ namespace SwptSaveLib.ValueTypes
 
         public override string DisplayType => $"{ItemType.GetDisplayName()} {Type.GetDisplayName()}";
 
+        public int Count => mData.Count;
+
+        public SaveValue this[int index]
+        {
+            get => mData[index];
+            set => mData[index] = value;
+        }
+
         public ArrayValue(SaveValueType itemType)
             : base(SaveValueType.Array)
         {
@@ -123,12 +131,45 @@ namespace SwptSaveLib.ValueTypes
             return $"{mData.Count} items";
         }
 
+        public int IndexOfItem(SaveValue item)
+        {
+            return mData.IndexOf(item);
+        }
+
+        public void MoveItemDown(int index)
+        {
+            if (index >= mData.Count - 1) return;
+
+            SaveValue val = mData[index];
+            mData.RemoveAt(index);
+            mData.Insert(index + 1, val);
+        }
+
+        public void MoveItemUp(int index)
+        {
+            if (index < 1 || index >= mData.Count) return;
+
+            SaveValue val = mData[index];
+            mData.RemoveAt(index);
+            mData.Insert(index - 1, val);
+        }
+
         public void AddNewItem()
         {
             mData.Add(Create(ItemType));
         }
 
-        public void DeleteItems(IEnumerable items)
+        public void InsertNewItem(int index)
+        {
+            mData.Insert(index, Create(ItemType));
+        }
+
+        public void RemoveItem(int index)
+        {
+            mData.RemoveAt(index);
+        }
+
+        public void RemoveItems(IEnumerable items)
         {
             foreach (SaveValue item in items.Cast<SaveValue>().ToArray())
             {
