@@ -91,6 +91,11 @@ namespace SwptSaveLib
 
             return value;
         }
+
+        public T GetData<T>()
+        {
+            return Data is T ? (T)Data : default;
+        }
     }
 
     public abstract class SaveValue<T> : SaveValue

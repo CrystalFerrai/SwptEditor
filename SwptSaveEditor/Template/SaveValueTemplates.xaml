@@ -16,7 +16,7 @@
 <ResourceDictionary
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="clr-namespace:SwptSaveEditor"
+    xmlns:local="clr-namespace:SwptSaveEditor.Template"
     xmlns:conv="clr-namespace:SwptSaveEditor.Converters"
     xmlns:c="clr-namespace:SwptSaveEditor.Controls"
     xmlns:sys="clr-namespace:System;assembly=mscorlib">
@@ -32,7 +32,7 @@
         x:Key="{x:Static local:SaveValueTemplateSelector.EditArrayTemplateKey}">
         <c:ArrayEditor />
     </DataTemplate>
-    
+
     <!-- String -->
     <DataTemplate
         x:Key="{x:Static local:SaveValueTemplateSelector.StringTemplateKey}">
@@ -192,7 +192,7 @@
             IsReadOnly="True"
             Color="{Binding Data, Converter={x:Static conv:ColorConverter.Instance}}" />
     </DataTemplate>
-    
+
     <DataTemplate
         x:Key="{x:Static local:SaveValueTemplateSelector.EditLinearColorTemplateKey}">
         <c:ColorPicker

@@ -12,30 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using SwptSaveEditor.Input;
-using SwptSaveEditor.Undo;
-using System.Collections.Generic;
+using SwptSaveLib;
 
 namespace SwptSaveEditor.Document
 {
     /// <summary>
-    /// Interface for a document, which represents the top level content of a tab in the editor
+    /// Interface for a document that has savable content
     /// </summary>
-    internal interface IDocument
+    interface ISaveDocument : IDocument
     {
         /// <summary>
-        /// The name of the document
+        /// Gets the data model for this document
         /// </summary>
-        string Name { get; }
+        SaveFile File { get; }
 
         /// <summary>
-        /// Input actions defined by the document for the input service to process
+        /// Saves the document
         /// </summary>
-        IEnumerable<InputAction> InputActions { get; }
-
-        /// <summary>
-        /// Gets an undo service associated with the document
-        /// </summary>
-        IUndoService UndoService { get; }
+        void Save();
     }
 }

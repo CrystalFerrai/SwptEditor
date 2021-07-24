@@ -24,6 +24,7 @@
     xmlns:conv="clr-namespace:SwptSaveEditor.Converters"
     xmlns:b="clr-namespace:SwptSaveEditor.Behaviors"
     xmlns:c="clr-namespace:SwptSaveEditor.Controls"
+    xmlns:t="clr-namespace:SwptSaveEditor.Template"
     xmlns:u="clr-namespace:SwptSaveEditor.Utils"
     mc:Ignorable="d"
     FocusManager.FocusedElement="{Binding ElementName=PropertyGrid}"
@@ -328,8 +329,8 @@
                     MinWidth="100"
                     CanUserSort="False"
                     Binding="{Binding Value}"
-                    CellTemplateSelector="{x:Static root:SaveValueTemplateSelector.Instance}"
-                    CellEditingTemplateSelector="{x:Static root:SaveValueTemplateSelector.EditInstance}" />
+                    CellTemplateSelector="{x:Static t:SaveValueTemplateSelector.Instance}"
+                    CellEditingTemplateSelector="{x:Static t:SaveValueTemplateSelector.EditInstance}" />
                 <DataGridTextColumn
                     Header="Type"
                     Width="Auto"

@@ -13,6 +13,11 @@
 // limitations under the License.
 
 using SwptSaveEditor.Utils;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Windows.Threading;
 
 namespace SwptSaveEditor.Document
 {
@@ -21,14 +26,61 @@ namespace SwptSaveEditor.Document
     /// </summary>
     internal class DocumentService : ObservableObject
     {
+        private readonly ObservableCollection<IDocument> mBasicDocuments;
+        private readonly ObservableCollection<ISaveDocument> mAdvancedDocuments;
+
         /// <summary>
-        /// Gets or sets the currently active document
+        /// Gets or sets whether the application is in advanced mode vs basic mode
         /// </summary>
-        public IDocument ActiveDocument
+        public bool IsAdvancedMode
         {
-            get => _activeDocu8ment;
-            set => Set(ref _activeDocu8ment, value);
+            get => _isAdvancedMode;
+            set => Set(ref _isAdvancedMode, value);
         }
-        private IDocument _activeDocu8ment;
+        private bool _isAdvancedMode;
+
+        /// <summary>
+        /// Gets the collection of available documents for basic mode
+        /// </summary>
+        public IList<IDocument> BasicDocuments => mBasicDocuments;
+
+        /// <summary>
+        /// Gets the collection of available documents for advanced mode
+        /// </summary>
+        public IList<ISaveDocument> AdvancedDocuments => mAdvancedDocuments;
+
+        /// <summary>
+        /// Gets or sets the currently active basic mode document
+        /// </summary>
+        public IDocument BasicActiveDocument
+        {
+            get => _basicActiveDocument;
+            set => Set(ref _basicActiveDocument, value);
+        }
+        private IDocument _basicActiveDocument;
+
+        /// <summary>
+        /// Gets or sets the currently active advanced mode document
+        /// </summary>
+        public ISaveDocument AdvancedActiveDocument
+        {
+            get => _advancedActiveDocument;
+            set => Set(ref _advancedActiveDocument, value);
+        }
+        private ISaveDocument _advancedActiveDocument;
+
+        public DocumentService()
+        {
+            mAdvancedDocuments = new ObservableCollection<ISaveDocument>();
+            mBasicDocuments = new ObservableCollection<IDocument>();
+        }
+
+        /// <summary>
+        /// Returns the currently active document, accounting for the current application mode
+        /// </summary>
+        public IDocument GetActiveDocument()
+        {
+            return IsAdvancedMode ? AdvancedActiveDocument : BasicActiveDocument;
+        }
     }
 }

@@ -16,7 +16,7 @@ using SwptSaveLib;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace SwptSaveEditor
+namespace SwptSaveEditor.Template
 {
     /// <summary>
     /// Template selector for displaying and editing SaveValue types in a DataGrid

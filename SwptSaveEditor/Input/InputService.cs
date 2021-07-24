@@ -55,7 +55,7 @@ namespace SwptSaveEditor.Input
             if (SuppressActions) return;
             if (args.Handled) return;
 
-            IDocument doc = mDocumentService.ActiveDocument;
+            IDocument doc = mDocumentService.GetActiveDocument();
             if (doc != null)
             {
                 ProcessActions(doc.InputActions, args);

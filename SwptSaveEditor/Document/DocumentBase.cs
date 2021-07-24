@@ -14,28 +14,34 @@
 
 using SwptSaveEditor.Input;
 using SwptSaveEditor.Undo;
+using SwptSaveEditor.Utils;
 using System.Collections.Generic;
 
 namespace SwptSaveEditor.Document
 {
     /// <summary>
-    /// Interface for a document, which represents the top level content of a tab in the editor
+    /// Optional base class for documents that helps implement the <see cref="IDocument"/> interface
     /// </summary>
-    internal interface IDocument
+    internal abstract class DocumentBase : ViewModelBase, IDocument
     {
-        /// <summary>
-        /// The name of the document
-        /// </summary>
-        string Name { get; }
+        protected readonly UndoService mUndoService;
+        protected readonly List<InputAction> mInputActions;
 
-        /// <summary>
-        /// Input actions defined by the document for the input service to process
-        /// </summary>
-        IEnumerable<InputAction> InputActions { get; }
+        public abstract string Name { get; }
 
-        /// <summary>
-        /// Gets an undo service associated with the document
-        /// </summary>
-        IUndoService UndoService { get; }
+        public IEnumerable<InputAction> InputActions => mInputActions;
+
+        public IUndoService UndoService => mUndoService;
+
+        protected DocumentBase()
+        {
+            mUndoService = new UndoService();
+            mInputActions = new List<InputAction>();
+        }
+
+        public override string ToString()
+        {
+            return Name;
+        }
     }
 }

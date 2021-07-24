@@ -21,6 +21,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:local="clr-namespace:SwptSaveEditor"
     xmlns:conv="clr-namespace:SwptSaveEditor.Converters"
+    xmlns:c="clr-namespace:SwptSaveEditor.Controls"
     xmlns:doc="clr-namespace:SwptSaveEditor.Document"
     mc:Ignorable="d"
     Title="{Binding WindowTitle}"
@@ -34,6 +35,37 @@
     MinHeight="400"
     d:DataContext="{d:DesignInstance Type={x:Type local:MainWindowVM}, IsDesignTimeCreatable=True}">
     <Grid>
+        <Grid.Resources>
+            <Style
+                x:Key="DocumentTabControl"
+                TargetType="{x:Type TabControl}">
+                <EventSetter Event="PreviewMouseDown" Handler="TabControl_PreviewMouseDown" />
+                <EventSetter Event="PreviewKeyDown" Handler="TabControl_PreviewKeyDown" />
+                <Setter Property="ItemContainerStyle">
+                    <Setter.Value>
+                        <Style
+                            TargetType="{x:Type TabItem}">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding UndoService.IsSavePoint}" Value="False">
+                                    <Setter Property="Foreground" Value="#ffff4000" />
+                                    <Setter Property="FontWeight" Value="Bold" />
+                                    <Setter Property="ToolTip" Value="Unsaved Changes" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Setter.Value>
+                </Setter>
+                <Setter Property="ItemTemplate">
+                    <Setter.Value>
+                        <DataTemplate
+                            DataType="{x:Type doc:IDocument}">
+                            <TextBlock
+                                Text="{Binding Name}" />
+                        </DataTemplate>
+                    </Setter.Value>
+                </Setter>
+            </Style>
+        </Grid.Resources>
         <Grid.RowDefinitions>
             <RowDefinition Height="auto" />
             <RowDefinition Height="*" />
@@ -45,96 +77,126 @@
             Padding="4">
             <Grid>
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="24" />
-                    <ColumnDefinition Width="10" />
-                    <ColumnDefinition Width="4" />
+                    <ColumnDefinition Width="*" />
                     <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="4" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="4" />
-                    <ColumnDefinition Width="Auto" />
-                    <ColumnDefinition Width="4" />
-                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 
-                <!-- Open -->
-                <ContentPresenter
-                    Margin="0 0 -1 0"
-                    Content="{Binding OpenAction}"
-                    Style="{StaticResource ToolbarButtonStyle}" />
-                <ComboBox
-                    Grid.Column="1"
-                    IsEditable="False"
-                    ToolTip="Recently Opened Save Games"
-                    ToolTipService.ShowOnDisabled="True"
-                    Template="{StaticResource DropDownControl}"
-                    ItemsSource="{Binding RecentSaveGames}"
-                    SelectedIndex="{Binding RecentSaveIndex}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate
-                            DataType="{x:Type local:SaveGameInfo}">
-                            <TextBlock
-                                Text="{Binding Name}"
-                                ToolTip="{Binding Path}" />
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
-
-                <!-- Close -->
-                <ContentPresenter
-                    Grid.Column="3"
-                    Content="{Binding CloseAction}"
-                    Style="{StaticResource ToolbarButtonStyle}" />
-
-                <!-- Reload All -->
-                <ContentPresenter
-                    Grid.Column="5"
-                    Content="{Binding ReloadAction}"
-                    Style="{StaticResource ToolbarButtonStyle}" />
+                <!-- Left -->
+                <Grid
+                    VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="24" />
+                        <ColumnDefinition Width="10" />
+                        <ColumnDefinition Width="4" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="4" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="4" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="4" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
                 
-                <!-- Save All -->
-                <ContentPresenter
-                    Grid.Column="7"
-                    Content="{Binding SaveAllAction}"
-                    Style="{StaticResource ToolbarButtonStyle}" />
+                    <ContentPresenter
+                        Margin="0 0 -1 0"
+                        Content="{Binding OpenAction}"
+                        Style="{StaticResource ToolbarButtonStyle}" />
+                    <ComboBox
+                        Grid.Column="1"
+                        IsEditable="False"
+                        ToolTip="Recently Opened Save Games"
+                        ToolTipService.ShowOnDisabled="True"
+                        Template="{StaticResource DropDownControl}"
+                        ItemsSource="{Binding RecentSaveGames}"
+                        SelectedIndex="{Binding RecentSaveIndex}">
+                        <ComboBox.ItemTemplate>
+                            <DataTemplate
+                                DataType="{x:Type local:SaveGameInfo}">
+                                <TextBlock
+                                    Text="{Binding Name}"
+                                    ToolTip="{Binding Path}" />
+                            </DataTemplate>
+                        </ComboBox.ItemTemplate>
+                    </ComboBox>
 
-                <!-- Save All As -->
-                <ContentPresenter
-                    Grid.Column="9"
-                    Content="{Binding SaveAllAsAction}"
-                    Style="{StaticResource ToolbarButtonStyle}" />
+                    <ContentPresenter
+                        Grid.Column="3"
+                        Content="{Binding CloseAction}"
+                        Style="{StaticResource ToolbarButtonStyle}" />
 
+                    <ContentPresenter
+                        Grid.Column="5"
+                        Content="{Binding ReloadAction}"
+                        Style="{StaticResource ToolbarButtonStyle}" />
+                
+                    <ContentPresenter
+                        Grid.Column="7"
+                        Content="{Binding SaveAllAction}"
+                        Style="{StaticResource ToolbarButtonStyle}" />
+
+                    <ContentPresenter
+                        Grid.Column="9"
+                        Content="{Binding SaveAllAsAction}"
+                        Style="{StaticResource ToolbarButtonStyle}" />
+
+                </Grid>
+                
+                <!-- Center -->
+                <c:SwitchButton
+                    Grid.Column="1"
+                    VerticalAlignment="Top"
+                    Margin="0 -2 0 0"
+                    IsChecked="{Binding DocumentService.IsAdvancedMode}"
+                    OffContent="Basic"
+                    OnContent="Advanced"
+                    ToolTip="Switch between friendly and advanced editor modes">
+                    <c:SwitchButton.ContentSelectedStyle>
+                        <Style>
+                            <Setter Property="TextElement.FontWeight" Value="Bold" />
+                        </Style>
+                    </c:SwitchButton.ContentSelectedStyle>
+                </c:SwitchButton>
+
+                <!-- Right -->
+                <Grid
+                    Grid.Column="2"
+                    VerticalAlignment="Top">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="20" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <ContentPresenter
+                        Grid.Column="1"
+                        Content="{Binding OnlineHelpAction}"
+                        Style="{StaticResource ToolbarButtonBorderlessStyle}" />
+
+                </Grid>
             </Grid>
         </Border>
 
-        <!-- Container for loaded documents. For individual documents, see SaveDocumentView.xaml -->
+        <!-- Containers for documents -->
         <TabControl
             Grid.Row="1"
-            PreviewMouseDown="TabControl_PreviewMouseDown"
-            PreviewKeyDown="TabControl_PreviewKeyDown"
-            ItemsSource="{Binding Documents}"
-            SelectedItem="{Binding DocumentService.ActiveDocument}"
-            Visibility="{Binding IsSaveOpen, Converter={x:Static conv:BoolToVisibilityConverter.CollapseInstance}}">
-            <TabControl.ItemContainerStyle>
-                <Style
-                    TargetType="{x:Type TabItem}">
-                    <Style.Triggers>
-                        <DataTrigger Binding="{Binding UndoService.IsSavePoint}" Value="False">
-                            <Setter Property="Foreground" Value="#ffff4000" />
-                            <Setter Property="FontWeight" Value="Bold" />
-                            <Setter Property="ToolTip" Value="Unsaved Changes" />
-                        </DataTrigger>
-                    </Style.Triggers>
-                </Style>
-            </TabControl.ItemContainerStyle>
-            <TabControl.ItemTemplate>
-                <DataTemplate
-                    DataType="{x:Type doc:SaveDocument}">
-                    <TextBlock
-                        Text="{Binding Name}" />
-                </DataTemplate>
-            </TabControl.ItemTemplate>
-        </TabControl>
+            ItemsSource="{Binding DocumentService.AdvancedDocuments}"
+            SelectedItem="{Binding DocumentService.AdvancedActiveDocument}"
+            Visibility="{Binding ShowAdvancedDocuments, Converter={x:Static conv:BoolToVisibilityConverter.CollapseInstance}}"
+            Style="{StaticResource DocumentTabControl}" />
+
+        <!-- Containers for documents -->
+        <TabControl
+            Grid.Row="1"
+            ItemsSource="{Binding DocumentService.BasicDocuments}"
+            SelectedItem="{Binding DocumentService.BasicActiveDocument}"
+            Visibility="{Binding ShowBasicDocuments, Converter={x:Static conv:BoolToVisibilityConverter.CollapseInstance}}"
+            Style="{StaticResource DocumentTabControl}" />
 
         <!-- Content shown when nothing is loaded -->
         <Border

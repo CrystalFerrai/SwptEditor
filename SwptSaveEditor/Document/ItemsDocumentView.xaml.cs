@@ -12,30 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-using SwptSaveEditor.Input;
-using SwptSaveEditor.Undo;
-using System.Collections.Generic;
+using System.Windows.Controls;
 
 namespace SwptSaveEditor.Document
 {
     /// <summary>
-    /// Interface for a document, which represents the top level content of a tab in the editor
+    /// View for an ItemsDocument
     /// </summary>
-    internal interface IDocument
+    internal partial class ItemsDocumentView : UserControl
     {
-        /// <summary>
-        /// The name of the document
-        /// </summary>
-        string Name { get; }
+        private ItemsDocument ViewModel => (ItemsDocument)DataContext;
 
-        /// <summary>
-        /// Input actions defined by the document for the input service to process
-        /// </summary>
-        IEnumerable<InputAction> InputActions { get; }
+        public ItemsDocumentView()
+        {
+            InitializeComponent();
+        }
 
-        /// <summary>
-        /// Gets an undo service associated with the document
-        /// </summary>
-        IUndoService UndoService { get; }
+        private void ItemsGrid_BeginningEdit(object sender, DataGridBeginningEditEventArgs e)
+        {
+            ViewModel.SuppressInputActions = true;
+        }
+
+        private void ItemsGrid_RowEditEnding(object sender, DataGridRowEditEndingEventArgs e)
+        {
+            ViewModel.SuppressInputActions = false;
+        }
     }
 }

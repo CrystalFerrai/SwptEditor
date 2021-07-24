@@ -46,7 +46,6 @@ namespace SwptSaveEditor
         private readonly SettingsService mSettingsService;
         private readonly InputService mInputService;
 
-        private readonly ObservableCollection<SaveDocument> mDocuments;
         private readonly ObservableCollection<SaveGameInfo> mRecentSaveGames;
 
         private readonly DelegateInputAction mOpenAction;
@@ -54,6 +53,7 @@ namespace SwptSaveEditor
         private readonly DelegateInputAction mReloadAction;
         private readonly DelegateInputAction mSaveAllAction;
         private readonly DelegateInputAction mSaveAllAsAction;
+        private readonly DelegateInputAction mOnlineHelpAction;
 
         private readonly DelegateCommand<string> mOpenRecentCommand;
 
@@ -67,8 +67,6 @@ namespace SwptSaveEditor
             set => Set(ref _windowTitle, value);
         }
         private string _windowTitle = BaseWindowTitle;
-
-        public IEnumerable<SaveDocument> Documents => mDocuments;
 
         public DocumentService DocumentService => mDocumentService;
 
@@ -87,6 +85,10 @@ namespace SwptSaveEditor
         public bool IsSaveOpen => mSaveGame != null;
 
         public bool HasRecentSave => mRecentSaveGames.Count > 0;
+
+        public bool ShowBasicDocuments => IsSaveOpen && !DocumentService.IsAdvancedMode;
+
+        public bool ShowAdvancedDocuments => IsSaveOpen && DocumentService.IsAdvancedMode;
 
         public WindowState WindowState
         {
@@ -135,6 +137,8 @@ namespace SwptSaveEditor
 
         public InputAction SaveAllAsAction => mSaveAllAsAction;
 
+        public InputAction OnlineHelpAction => mOnlineHelpAction;
+
         public ICommand OpenRecentCommand => mOpenRecentCommand;
 
         public MainWindowVM(IServiceProvider services)
@@ -147,7 +151,8 @@ namespace SwptSaveEditor
             mInputService = new InputService(mServices);
             mServices.AddService(mInputService);
 
-            mDocuments = new ObservableCollection<SaveDocument>();
+            mDocumentService.PropertyChanged += DocumentService_PropertyChanged;
+
             mRecentSaveGames = new ObservableCollection<SaveGameInfo>();
 
             mSettings = new DelegateSettingsProvider("MainWindow", mSettingsService);
@@ -159,6 +164,7 @@ namespace SwptSaveEditor
             mInputService.GlobalActions.Add(mReloadAction = new DelegateInputAction("Reload All from Disk", Key.R, ModifierKeys.Control, Images.ToolbarIcons.Refresh, ReloadFromDisk, () => IsSaveOpen));
             mInputService.GlobalActions.Add(mSaveAllAction = new DelegateInputAction("Save All Changed Files", Key.S, ModifierKeys.Control | ModifierKeys.Shift, Images.ToolbarIcons.SaveAll, SaveAllChanges, AnyUnsavedChanges));
             mInputService.GlobalActions.Add(mSaveAllAsAction = new DelegateInputAction("Save All Files to a New Location", Key.N, ModifierKeys.Control, Images.ToolbarIcons.AddFolder, SaveAllAs, () => IsSaveOpen));
+            mInputService.GlobalActions.Add(mOnlineHelpAction = new DelegateInputAction("Online Help [Coming Soon]", Key.F1, ModifierKeys.None, Images.ToolbarIcons.Question, OpenOnlineHelp));
 
             mOpenRecentCommand = new DelegateCommand<string>((path) => LoadSaveGame(path));
         }
@@ -176,6 +182,7 @@ namespace SwptSaveEditor
         {
             if (disposing)
             {
+                mDocumentService.PropertyChanged -= DocumentService_PropertyChanged;
                 CloseDocuments();
             }
 
@@ -196,7 +203,7 @@ namespace SwptSaveEditor
 
         private void SaveAllChanges()
         {
-            foreach (SaveDocument doc in mDocuments.Where(d => !d.UndoService.IsSavePoint))
+            foreach (ISaveDocument doc in mDocumentService.AdvancedDocuments.Where(d => !d.UndoService.IsSavePoint))
             {
                 doc.Save();
             }
@@ -246,15 +253,25 @@ namespace SwptSaveEditor
             foreach (SaveFile file in mSaveGame.Files)
             {
                 SaveDocument document = new SaveDocument(mServices, file);
-                document.UndoService.StateChanged += Document_StateChanged;
-                mDocuments.Add(document);
+                document.UndoService.StateChanged += AdvancedDocument_StateChanged;
+                mDocumentService.AdvancedDocuments.Add(document);
             }
 
-            SaveDocument selectedDocument = mDocuments.FirstOrDefault(f => f.Name.Equals("Global", StringComparison.InvariantCultureIgnoreCase));
-            if (selectedDocument == null) selectedDocument = mDocuments.FirstOrDefault();
-            mDocumentService.ActiveDocument = selectedDocument;
+            // Basic documents may depend on advanced documents, so create them afterwards
+            CreateBasicDocuments();
+
+            ISaveDocument selectedDocument = mDocumentService.AdvancedDocuments.FirstOrDefault(f => f.Name.Equals("Global", StringComparison.InvariantCultureIgnoreCase));
+            if (selectedDocument == null) selectedDocument = mDocumentService.AdvancedDocuments.FirstOrDefault();
+            mDocumentService.AdvancedActiveDocument = selectedDocument;
 
             AddToRecentList(path);
+        }
+
+        private void CreateBasicDocuments()
+        {
+            ItemsDocument itemsDoc = new ItemsDocument(mServices);
+            mDocumentService.BasicDocuments.Add(itemsDoc);
+            mDocumentService.BasicActiveDocument = itemsDoc;
         }
 
         private void ReloadFromDisk()
@@ -318,7 +335,7 @@ namespace SwptSaveEditor
             if (shouldSave)
             {
                 mSaveGame.Save(path);
-                foreach (SaveDocument document in mDocuments)
+                foreach (ISaveDocument document in mDocumentService.AdvancedDocuments)
                 {
                     document.UndoService.SetSavePoint();
                 }
@@ -331,7 +348,7 @@ namespace SwptSaveEditor
 
         private bool AnyUnsavedChanges()
         {
-            return mDocuments.Any(d => !d.UndoService.IsSavePoint);
+            return mDocumentService.AdvancedDocuments.Any(d => !d.UndoService.IsSavePoint);
         }
 
         private void CloseAll()
@@ -367,14 +384,22 @@ namespace SwptSaveEditor
 
         private void CloseDocuments()
         {
-            foreach (SaveDocument document in mDocuments)
-            {
-                document.UndoService.StateChanged -= Document_StateChanged;
-                document.Dispose();
-            }
-            mDocuments.Clear();
+            mDocumentService.BasicActiveDocument = null;
+            mDocumentService.AdvancedActiveDocument = null;
 
-            mDocumentService.ActiveDocument = null;
+            // Basic documents may depend on advanced documents, so close them first
+            foreach (IDocument document in mDocumentService.BasicDocuments)
+            {
+                (document as IDisposable)?.Dispose();
+            }
+            mDocumentService.BasicDocuments.Clear();
+
+            foreach (ISaveDocument document in mDocumentService.AdvancedDocuments)
+            {
+                document.UndoService.StateChanged -= AdvancedDocument_StateChanged;
+                (document as IDisposable)?.Dispose();
+            }
+            mDocumentService.AdvancedDocuments.Clear();
         }
 
         private void AddToRecentList(string path)
@@ -402,12 +427,22 @@ namespace SwptSaveEditor
 
         private void RefreshLoadedState()
         {
-            NotifyPropertyChanged(nameof(IsSaveOpen));
+            NotifyPropertyChanged(nameof(IsSaveOpen), nameof(ShowBasicDocuments), nameof(ShowAdvancedDocuments));
 
             mCloseAction.RaiseCanExecuteChanged();
             mReloadAction.RaiseCanExecuteChanged();
             mSaveAllAction.RaiseCanExecuteChanged();
             mSaveAllAsAction.RaiseCanExecuteChanged();
+        }
+
+        private void DocumentService_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            switch (e.PropertyName)
+            {
+                case nameof(DocumentService.IsAdvancedMode):
+                    NotifyPropertyChanged(nameof(ShowBasicDocuments), nameof(ShowAdvancedDocuments));
+                    break;
+            }
         }
 
         private void Settings_SettingsLoaded(object sender, EventArgs e)
@@ -430,9 +465,14 @@ namespace SwptSaveEditor
             WindowState = state;
         }
 
-        private void Document_StateChanged(object sender, EventArgs e)
+        private void AdvancedDocument_StateChanged(object sender, EventArgs e)
         {
             mSaveAllAction.RaiseCanExecuteChanged();
+        }
+
+        private void OpenOnlineHelp()
+        {
+            // TODO
         }
     }
 

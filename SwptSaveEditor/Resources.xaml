@@ -20,15 +20,11 @@
     xmlns:doc="clr-namespace:SwptSaveEditor.Document">
     
     <ResourceDictionary.MergedDictionaries>
-        <ResourceDictionary Source="/SaveValueTemplates.xaml" />
+        <ResourceDictionary Source="/Template/SaveValueTemplates.xaml" />
+        <ResourceDictionary Source="/Template/DocumentTemplates.xaml" />
         <ResourceDictionary Source="/Controls/ArrayEditor.xaml" />
     </ResourceDictionary.MergedDictionaries>
 
-    <DataTemplate
-        DataType="{x:Type doc:SaveDocument}">
-        <doc:SaveDocumentView />
-    </DataTemplate>
-    
     <ControlTemplate
         x:Key="DropDownControl"
         TargetType="{x:Type ComboBox}">

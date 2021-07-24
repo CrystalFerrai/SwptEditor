@@ -75,6 +75,7 @@
     <Compile Include="Controls\ArrayEditor.cs" />
     <Compile Include="Controls\BindingDataGridTemplateColumn.cs" />
     <Compile Include="Controls\ColorPicker.cs" />
+    <Compile Include="Controls\SwitchButton.cs" />
     <Compile Include="Converters\BoolToVisibilityConverter.cs" />
     <Compile Include="Converters\ColorToStringConverter.cs" />
     <Compile Include="Converters\InverseBoolConverter.cs" />
@@ -93,8 +94,14 @@
     <Compile Include="Dialogs\RenamePropertyDialogView.xaml.cs">
       <DependentUpon>RenamePropertyDialogView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Document\DocumentBase.cs" />
     <Compile Include="Document\DocumentService.cs" />
     <Compile Include="Document\IDocument.cs" />
+    <Compile Include="Document\ItemsDocument.cs" />
+    <Compile Include="Document\ISaveDocument.cs" />
+    <Compile Include="Document\ItemsDocumentView.xaml.cs">
+      <DependentUpon>ItemsDocumentView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Document\SaveDocument.cs" />
     <Compile Include="Document\SaveDocumentView.xaml.cs">
       <DependentUpon>SaveDocumentView.xaml</DependentUpon>
@@ -102,7 +109,7 @@
     <Compile Include="Input\DelegateInputAction.cs" />
     <Compile Include="Input\InputAction.cs" />
     <Compile Include="Input\InputService.cs" />
-    <Compile Include="SaveValueTemplateSelector.cs" />
+    <Compile Include="Template\SaveValueTemplateSelector.cs" />
     <Compile Include="Images.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -144,6 +151,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Document\ItemsDocumentView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Template\DocumentTemplates.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Document\SaveDocumentView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -156,7 +171,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SaveValueTemplates.xaml">
+    <Page Include="Template\SaveValueTemplates.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -165,6 +180,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Themes\Generic\ColorPicker.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Themes\Generic\SwitchButton.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -195,6 +214,7 @@
     <Resource Include="Images\ToolbarIcons\MoveUp.png" />
     <Resource Include="Images\ToolbarIcons\OpenFolder.png" />
     <Resource Include="Images\ToolbarIcons\Paste.png" />
+    <Resource Include="Images\ToolbarIcons\Question.png" />
     <Resource Include="Images\ToolbarIcons\Redo.png" />
     <Resource Include="Images\ToolbarIcons\Refresh.png" />
     <Resource Include="Images\ToolbarIcons\Remove.png" />

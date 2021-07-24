@@ -21,6 +21,7 @@
     xmlns:local="clr-namespace:SwptSaveEditor.Controls"
     xmlns:b="clr-namespace:SwptSaveEditor.Behaviors"
     xmlns:lib="clr-namespace:SwptSaveLib;assembly=SwptSaveLib"
+    xmlns:t="clr-namespace:SwptSaveEditor.Template"
     xmlns:u="clr-namespace:SwptSaveEditor.Utils"
     mc:Ignorable="d">
 
@@ -106,8 +107,8 @@
                                     <DataGridTemplateColumn
                                         Header="Value"
                                         Width="*"
-                                        CellTemplateSelector="{x:Static root:SaveValueTemplateSelector.Instance}"
-                                        CellEditingTemplateSelector="{x:Static root:SaveValueTemplateSelector.EditInstance}" />
+                                        CellTemplateSelector="{x:Static t:SaveValueTemplateSelector.Instance}"
+                                        CellEditingTemplateSelector="{x:Static t:SaveValueTemplateSelector.EditInstance}" />
                                 </DataGrid.Columns>
                             </DataGrid>
                         </ScrollViewer>

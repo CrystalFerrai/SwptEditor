@@ -35,7 +35,7 @@ namespace SwptSaveEditor.Document
     /// <summary>
     /// View model for SaveFile instances being displayed in the editor
     /// </summary>
-    internal class SaveDocument : ViewModelBase, IDocument, IDataGridOwner
+    internal class SaveDocument : ViewModelBase, ISaveDocument, IDataGridOwner
     {
         private readonly SaveFile mFile;
 
@@ -62,6 +62,8 @@ namespace SwptSaveEditor.Document
         public string Name => mFile.Name;
 
         public IReadOnlyList<SaveProperty> Properties => mFile.Properties;
+
+        public SaveFile File => mFile;
 
         public IEnumerable<InputAction> ContextMenuItems { get; }
 
@@ -242,6 +244,11 @@ namespace SwptSaveEditor.Document
             mFile.Save();
             mUndoService.SetSavePoint();
             mSaveAction.RaiseCanExecuteChanged();
+        }
+
+        public override string ToString()
+        {
+            return Name;
         }
 
         private void Reload()
