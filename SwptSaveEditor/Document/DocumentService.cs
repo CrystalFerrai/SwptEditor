@@ -13,11 +13,9 @@
 // limitations under the License.
 
 using SwptSaveEditor.Utils;
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Windows.Threading;
+using System.Collections.Specialized;
 
 namespace SwptSaveEditor.Document
 {
@@ -28,6 +26,7 @@ namespace SwptSaveEditor.Document
     {
         private readonly ObservableCollection<IDocument> mBasicDocuments;
         private readonly ObservableCollection<ISaveDocument> mAdvancedDocuments;
+        private readonly Dictionary<string, ISaveDocument> mAdvancedDocumentMap;
 
         /// <summary>
         /// Gets or sets whether the application is in advanced mode vs basic mode
@@ -48,6 +47,11 @@ namespace SwptSaveEditor.Document
         /// Gets the collection of available documents for advanced mode
         /// </summary>
         public IList<ISaveDocument> AdvancedDocuments => mAdvancedDocuments;
+
+        /// <summary>
+        /// Provides a way to lookup advanced docuemtns by name
+        /// </summary>
+        public IReadOnlyDictionary<string, ISaveDocument> AdvancedDocumentMap => mAdvancedDocumentMap;
 
         /// <summary>
         /// Gets or sets the currently active basic mode document
@@ -73,6 +77,51 @@ namespace SwptSaveEditor.Document
         {
             mAdvancedDocuments = new ObservableCollection<ISaveDocument>();
             mBasicDocuments = new ObservableCollection<IDocument>();
+            mAdvancedDocumentMap = new Dictionary<string, ISaveDocument>();
+
+            BuildAdvancedMap();
+            mAdvancedDocuments.CollectionChanged += AdvancedDocuments_CollectionChanged;
+        }
+
+        private void AdvancedDocuments_CollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (ISaveDocument doc in e.NewItems)
+                    {
+                        mAdvancedDocumentMap.Add(doc.Name, doc);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (ISaveDocument doc in e.OldItems)
+                    {
+                        mAdvancedDocumentMap.Remove(doc.Name);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (ISaveDocument doc in e.OldItems)
+                    {
+                        mAdvancedDocumentMap.Remove(doc.Name);
+                    }
+                    foreach (ISaveDocument doc in e.NewItems)
+                    {
+                        mAdvancedDocumentMap.Add(doc.Name, doc);
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    BuildAdvancedMap();
+                    break;
+            }
+        }
+
+        private void BuildAdvancedMap()
+        {
+            mAdvancedDocumentMap.Clear();
+            foreach (ISaveDocument doc in mAdvancedDocuments)
+            {
+                mAdvancedDocumentMap.Add(doc.Name, doc);
+            }
         }
 
         /// <summary>

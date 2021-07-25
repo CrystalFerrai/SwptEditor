@@ -74,30 +74,11 @@ namespace SwptSaveEditor.Document
 
         private void SyncItems()
         {
-            ISaveDocument globalDoc = null;
-            ISaveDocument itemsDoc = null;
-            ISaveDocument storagesDoc = null;
-            List<ISaveDocument> characterDocs = new List<ISaveDocument>();
-            foreach (ISaveDocument doc in mDocumentService.AdvancedDocuments)
+            ISaveDocument itemsDoc;
+            if (!mDocumentService.AdvancedDocumentMap.TryGetValue("Items", out itemsDoc))
             {
-                switch (doc.Name)
-                {
-                    case "Global":
-                        globalDoc = doc;
-                        break;
-                    case "Items":
-                        itemsDoc = doc;
-                        break;
-                    case "Storages":
-                        storagesDoc = doc;
-                        break;
-                    case "Player":
-                        characterDocs.Add(doc);
-                        break;
-                }
+                return;
             }
-
-            if (itemsDoc == null) return;
 
             foreach (SaveProperty property in itemsDoc.File.Properties)
             {
@@ -139,7 +120,8 @@ namespace SwptSaveEditor.Document
                 }
             }
 
-            if (storagesDoc != null)
+            ISaveDocument storagesDoc;
+            if (mDocumentService.AdvancedDocumentMap.TryGetValue("Storages", out storagesDoc))
             {
                 const string IdArray = "idArray";
                 foreach (SaveProperty property in storagesDoc.File.Properties)
@@ -162,7 +144,16 @@ namespace SwptSaveEditor.Document
                 }
             }
 
-            if (globalDoc != null)
+            List<ISaveDocument> characterDocs = new List<ISaveDocument>();
+
+            ISaveDocument playerDoc = null;
+            if (mDocumentService.AdvancedDocumentMap.TryGetValue("Player", out playerDoc))
+            {
+                characterDocs.Add(playerDoc);
+            }
+
+            ISaveDocument globalDoc;
+            if (mDocumentService.AdvancedDocumentMap.TryGetValue("Global", out globalDoc))
             {
                 ArrayValue companionList = globalDoc.File.Properties.FirstOrDefault(p => p.Name == "companionlist")?.Value as ArrayValue;
                 if (companionList != null)
@@ -172,13 +163,10 @@ namespace SwptSaveEditor.Document
                         string companionName = value.GetData<string>();
                         if (companionName == null) continue;
 
-                        foreach (ISaveDocument doc in mDocumentService.AdvancedDocuments)
+                        ISaveDocument companionDoc;
+                        if (mDocumentService.AdvancedDocumentMap.TryGetValue(companionName, out companionDoc))
                         {
-                            if (companionName == doc.Name)
-                            {
-                                characterDocs.Add(doc);
-                                break;
-                            }
+                            characterDocs.Add(companionDoc);
                         }
                     }
                 }
