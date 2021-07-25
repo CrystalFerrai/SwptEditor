@@ -243,7 +243,19 @@ namespace SwptSaveEditor
             RefreshLoadedState();
             if (mSaveGame == null)
             {
-                MessageBox.Show(Application.Current.MainWindow, "Did not find any accessible save game files in the specified folder.", "No Files Found", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
+                bool wasRecent = false;
+                for (int i = 0; i < mRecentSaveGames.Count; ++i)
+                {
+                    if (mRecentSaveGames[i].Path.Equals(path, StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        mRecentSaveGames.RemoveAt(i);
+                        wasRecent = true;
+                        break; 
+                    }
+                }
+                string message = "Did not find any accessible save game files in the specified folder, or the folder doesn't exist.";
+                if (wasRecent) message += " This entry has been removed from your recents list.";
+                MessageBox.Show(Application.Current.MainWindow, message, "No Files Found", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
                 WindowTitle = BaseWindowTitle;
                 return;
             }
@@ -451,6 +463,7 @@ namespace SwptSaveEditor
             {
                 foreach (string path in paths.Split('|'))
                 {
+                    if (!Directory.Exists(path)) continue;
                     mRecentSaveGames.Add(new SaveGameInfo(path));
                 }
             }
