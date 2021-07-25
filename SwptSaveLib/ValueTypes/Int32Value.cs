@@ -23,7 +23,7 @@ namespace SwptSaveLib.ValueTypes
     public class Int32Value : SaveValue<Int32>
     {
         public Int32Value()
-            : base(SaveValueType.Int32)
+            : base(SaveValueTypes.Int32)
         {
         }
 

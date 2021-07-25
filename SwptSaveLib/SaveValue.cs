@@ -36,20 +36,20 @@ namespace SwptSaveLib
         }
         private object _data;
 
-        public virtual string DisplayType => Type.GetDisplayName();
+        public virtual string DisplayType => Type.DisplayName;
 
         static SaveValue()
         {
             sTypeMap = new Dictionary<SaveValueType, Type>()
             {
-                { SaveValueType.Array,   typeof(ArrayValue) },
-                { SaveValueType.String,  typeof(StringValue) },
-                { SaveValueType.Bool,    typeof(BoolValue) },
-                { SaveValueType.Int32,   typeof(Int32Value) },
-                { SaveValueType.Single,  typeof(SingleValue) },
-                { SaveValueType.Vector2, typeof(Vector2Value) },
-                { SaveValueType.Vector3, typeof(Vector3Value) },
-                { SaveValueType.LinearColor, typeof(LinearColorValue) }
+                { SaveValueTypes.Array,   typeof(ArrayValue) },
+                { SaveValueTypes.String,  typeof(StringValue) },
+                { SaveValueTypes.Bool,    typeof(BoolValue) },
+                { SaveValueTypes.Int32,   typeof(Int32Value) },
+                { SaveValueTypes.Single,  typeof(SingleValue) },
+                { SaveValueTypes.Vector2, typeof(Vector2Value) },
+                { SaveValueTypes.Vector3, typeof(Vector3Value) },
+                { SaveValueTypes.LinearColor, typeof(LinearColorValue) }
             };
         }
 

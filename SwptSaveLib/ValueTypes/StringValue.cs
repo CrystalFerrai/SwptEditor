@@ -22,7 +22,7 @@ namespace SwptSaveLib.ValueTypes
     public class StringValue : SaveValue<string>
     {
         public StringValue()
-            : base(SaveValueType.String)
+            : base(SaveValueTypes.String)
         {
             Data = string.Empty;
         }

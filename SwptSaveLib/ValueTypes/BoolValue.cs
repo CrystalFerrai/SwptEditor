@@ -22,7 +22,7 @@ namespace SwptSaveLib.ValueTypes
     public class BoolValue : SaveValue<bool>
     {
         public BoolValue()
-            : base(SaveValueType.Bool)
+            : base(SaveValueTypes.Bool)
         {
         }
 

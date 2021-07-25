@@ -59,7 +59,7 @@ namespace SwptSaveLib.ValueTypes
 
         public SaveValueType ItemType { get; }
 
-        public override string DisplayType => $"{ItemType.GetDisplayName()} {Type.GetDisplayName()}";
+        public override string DisplayType => $"{ItemType.DisplayName} {Type.DisplayName}";
 
         public int Count => mData.Count;
 
@@ -70,7 +70,7 @@ namespace SwptSaveLib.ValueTypes
         }
 
         public ArrayValue(SaveValueType itemType)
-            : base(SaveValueType.Array)
+            : base(SaveValueTypes.Array)
         {
             Data = mData = new ObservableCollection<SaveValue>();
             ItemType = itemType;

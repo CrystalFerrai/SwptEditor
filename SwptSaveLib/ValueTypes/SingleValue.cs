@@ -23,7 +23,7 @@ namespace SwptSaveLib.ValueTypes
     public class SingleValue : SaveValue<Single>
     {
         public SingleValue()
-            : base(SaveValueType.Single)
+            : base(SaveValueTypes.Single)
         {
         }
 

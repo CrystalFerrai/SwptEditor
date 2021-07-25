@@ -13,6 +13,7 @@
 // limitations under the License.
 
 using SwptSaveLib;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -23,9 +24,12 @@ namespace SwptSaveEditor.Template
     /// </summary>
     internal class SaveValueTemplateSelector : DataTemplateSelector
     {
-        private bool mIsEditMode;
+        private readonly bool mIsEditMode;
 
         private static bool sResourcesSearched;
+
+        private static Dictionary<SaveValueType, DataTemplate> sDisplayTemplateMap;
+        private static Dictionary<SaveValueType, DataTemplate> sEditTemplateMap;
 
         // Templates for displaying values
         private static DataTemplate sArrayTemplate;
@@ -97,49 +101,21 @@ namespace SwptSaveEditor.Template
 
             if (mIsEditMode)
             {
-                switch (val.Type)
+                DataTemplate template;
+                if (sEditTemplateMap.TryGetValue(val.Type, out template))
                 {
-                    case SaveValueType.Array:
-                        return sEditArrayTemplate;
-                    default:
-                    case SaveValueType.String:
-                        return sEditStringTemplate;
-                    case SaveValueType.Bool:
-                        return sEditBoolTemplate;
-                    case SaveValueType.Int32:
-                        return sEditInt32Template;
-                    case SaveValueType.Single:
-                        return sEditSingleTemplate;
-                    case SaveValueType.Vector2:
-                        return sEditVector2Template;
-                    case SaveValueType.Vector3:
-                        return sEditVector3Template;
-                    case SaveValueType.LinearColor:
-                        return sEditLinearColorTemplate;
+                    return template;
                 }
+                return sEditStringTemplate;
             }
             else
             {
-                switch (val.Type)
+                DataTemplate template;
+                if (sDisplayTemplateMap.TryGetValue(val.Type, out template))
                 {
-                    case SaveValueType.Array:
-                        return sArrayTemplate;
-                    default:
-                    case SaveValueType.String:
-                        return sStringTemplate;
-                    case SaveValueType.Bool:
-                        return sBoolTemplate;
-                    case SaveValueType.Int32:
-                        return sInt32Template;
-                    case SaveValueType.Single:
-                        return sSingleTemplate;
-                    case SaveValueType.Vector2:
-                        return sVector2Template;
-                    case SaveValueType.Vector3:
-                        return sVector3Template;
-                    case SaveValueType.LinearColor:
-                        return sLinearColorTemplate;
+                    return template;
                 }
+                return sStringTemplate;
             }
         }
 
@@ -156,6 +132,18 @@ namespace SwptSaveEditor.Template
                 sVector3Template = (DataTemplate)Application.Current.FindResource(Vector3TemplateKey);
                 sLinearColorTemplate = (DataTemplate)Application.Current.FindResource(LinearColorTemplateKey);
 
+                sDisplayTemplateMap = new Dictionary<SaveValueType, DataTemplate>()
+                {
+                    { SaveValueTypes.Array, sArrayTemplate },
+                    { SaveValueTypes.String, sStringTemplate },
+                    { SaveValueTypes.Bool, sBoolTemplate },
+                    { SaveValueTypes.Int32, sInt32Template },
+                    { SaveValueTypes.Single, sSingleTemplate },
+                    { SaveValueTypes.Vector2, sVector2Template },
+                    { SaveValueTypes.Vector3, sVector3Template },
+                    { SaveValueTypes.LinearColor, sLinearColorTemplate },
+                };
+
                 sEditArrayTemplate = (DataTemplate)Application.Current.FindResource(EditArrayTemplateKey);
                 sEditStringTemplate = (DataTemplate)Application.Current.FindResource(EditStringTemplateKey);
                 sEditBoolTemplate = (DataTemplate)Application.Current.FindResource(EditBoolTemplateKey);
@@ -164,6 +152,18 @@ namespace SwptSaveEditor.Template
                 sEditVector2Template = (DataTemplate)Application.Current.FindResource(EditVector2TemplateKey);
                 sEditVector3Template = (DataTemplate)Application.Current.FindResource(EditVector3TemplateKey);
                 sEditLinearColorTemplate = (DataTemplate)Application.Current.FindResource(EditLinearColorTemplateKey);
+
+                sEditTemplateMap = new Dictionary<SaveValueType, DataTemplate>()
+                {
+                    { SaveValueTypes.Array, sEditArrayTemplate },
+                    { SaveValueTypes.String, sEditStringTemplate },
+                    { SaveValueTypes.Bool, sEditBoolTemplate },
+                    { SaveValueTypes.Int32, sEditInt32Template },
+                    { SaveValueTypes.Single, sEditSingleTemplate },
+                    { SaveValueTypes.Vector2, sEditVector2Template },
+                    { SaveValueTypes.Vector3, sEditVector3Template },
+                    { SaveValueTypes.LinearColor, sEditLinearColorTemplate },
+                };
 
                 sResourcesSearched = true;
             }

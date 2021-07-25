@@ -64,7 +64,7 @@ namespace SwptSaveEditor.Dialogs
                 }
             }
         }
-        private SaveValueType _propertyType = SaveValueType.String;
+        private SaveValueType _propertyType = SaveValueTypes.String;
 
         /// <summary>
         /// Get whether the property is an array
@@ -95,7 +95,7 @@ namespace SwptSaveEditor.Dialogs
 
         public NewPropertyDialog()
         {
-            mTypes = SaveValueTypeExtensions.GetOrderedTypes().Select(t => new SaveValueTypeWrapper(t)).ToArray();
+            mTypes = SaveValueTypes.Instance.Enumarable.Select(t => new SaveValueTypeWrapper(t)).ToArray();
         }
 
         /// <summary>
@@ -122,7 +122,7 @@ namespace SwptSaveEditor.Dialogs
             public SaveValueTypeWrapper(SaveValueType type)
             {
                 Type = type;
-                DisplayName = type.GetDisplayName();
+                DisplayName = type.DisplayName;
             }
         }
     }

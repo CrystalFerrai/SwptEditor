@@ -78,7 +78,7 @@ namespace SwptSaveLib
                     throw new FormatException("Unexpected value in save file");
             }
 
-            SaveValueType type = (SaveValueType)reader.ReadUInt32();
+            SaveValueType type = SaveValueTypes.Instance[reader.ReadInt32()];
             SaveValue value = SaveValue.Load(reader, type, isArrayType);
 
             if (reader.ReadByte() != PostfixByte) throw new FormatException("Unexpected value in save file");
@@ -97,19 +97,19 @@ namespace SwptSaveLib
 
             long startPos = writer.BaseStream.Position;
 
-            if (Value.Type == SaveValueType.Array)
+            if (Value.Type == SaveValueTypes.Array)
             {
                 writer.Write(ArrayStart);
             }
             writer.Write(TypePrefix);
 
-            if (Value.Type == SaveValueType.Array)
+            if (Value.Type == SaveValueTypes.Array)
             {
-                writer.Write((uint)((ArrayValue)Value).ItemType);
+                writer.Write(((ArrayValue)Value).ItemType.ID);
             }
             else
             {
-                writer.Write((uint)Value.Type);
+                writer.Write(Value.Type.ID);
             }
 
             Value.Serialize(writer);

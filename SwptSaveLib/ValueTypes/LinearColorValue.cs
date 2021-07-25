@@ -22,7 +22,7 @@ namespace SwptSaveLib.ValueTypes
     public class LinearColorValue : SaveValue<LinearColor>
     {
         public LinearColorValue()
-            : base(SaveValueType.LinearColor)
+            : base(SaveValueTypes.LinearColor)
         {
             Data = new LinearColor();
         }

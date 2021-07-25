@@ -22,7 +22,7 @@ namespace SwptSaveLib.ValueTypes
     public class Vector2Value : SaveValue<Vector2>
     {
         public Vector2Value()
-            : base(SaveValueType.Vector2)
+            : base(SaveValueTypes.Vector2)
         {
             Data = new Vector2();
         }
